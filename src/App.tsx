@@ -62,12 +62,9 @@ export default function App() {
               <img
                 src="/logo.png"
                 alt="CareMatch"
-                className="mx-auto mb-5 size-[72px] object-contain"
+                className="mx-auto mb-4 size-[60px] object-contain"
               />
-              <div className="text-[11px] uppercase tracking-[0.06em] font-semibold text-white/70">
-                CareMatch
-              </div>
-              <h1 className="mt-2 text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
+              <h1 className="text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
                 Kim jesteś?
               </h1>
               <p className="mx-auto mt-2 max-w-64 text-[15px] leading-5 text-[#3c3c43]/60">
