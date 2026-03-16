@@ -20,6 +20,8 @@ import { GlassDialog } from "@/components/ui/dialog";
 import { SectionTitle } from "@/components/ui/section-title";
 import type { DiscoveryMode, RoleMode } from "@/types/domain";
 
+const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
+
 function nextIndex(current: number, length: number): number {
   if (length === 0) return 0;
   return (current + 1) % length;
@@ -60,7 +62,7 @@ export default function App() {
           <div className="w-full max-w-sm px-6">
             <div className="mb-8 text-center">
               <img
-                src="/logo.png"
+                src={logoSrc}
                 alt="CareMatch"
                 className="mx-auto mb-4 size-[180px] object-contain"
               />
