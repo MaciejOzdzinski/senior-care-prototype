@@ -284,7 +284,7 @@ export default function App() {
             </section>
           </main>
 
-          <nav className="grid grid-cols-4 gap-1 rounded-2xl bg-white p-1.5 shadow-[0_1px_6px_rgba(0,0,0,0.08)] md:max-w-md">
+          <nav className="grid grid-cols-4 gap-0.5 rounded-2xl border border-white/60 bg-white/50 px-2 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-2xl md:max-w-md">
             <BottomNavItem icon={Compass} label="Start" active />
             <BottomNavItem icon={Search} label="Odkrywaj" />
             <BottomNavItem icon={MessageCircleMore} label="Wiadomości" />
@@ -350,8 +350,8 @@ function BottomNavItem({
   return (
     <button
       type="button"
-      className={`inline-flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2.5 text-xs transition ${
-        active ? "bg-[#007AFF] text-white" : "text-[#8e8e93] hover:bg-[#f2f2f7]"
+      className={`inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] transition ${
+        active ? "text-[#007AFF]" : "text-[#8e8e93]"
       }`}
     >
       <Icon className="size-4.5" />
