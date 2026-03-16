@@ -62,7 +62,7 @@ export default function App() {
               <img
                 src="/logo.png"
                 alt="CareMatch"
-                className="mx-auto mb-4 size-20 object-contain"
+                className="mx-auto mb-4 size-28 object-contain"
               />
               <div className="text-[11px] uppercase tracking-[0.06em] font-semibold text-white/70">
                 CareMatch
