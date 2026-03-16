@@ -208,7 +208,9 @@ export default function App() {
                                 {caregiver.hourlyRate} zł/h
                               </div>
                             </div>
-                            <Badge className="bg-[#007AFF]/12 text-[#007AFF] font-semibold">{caregiver.compatibility}%</Badge>
+                            <Badge className="bg-[#007AFF]/12 text-[#007AFF] font-semibold">
+                              {caregiver.compatibility}%
+                            </Badge>
                           </div>
                           <div className="mt-4 flex flex-wrap gap-2">
                             {caregiver.specializations
