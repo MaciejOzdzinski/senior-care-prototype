@@ -22,7 +22,7 @@ export function GlassDialog({
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" />
-        <BaseDialog.Popup className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-2xl bg-white p-6 text-[#1c1c1e] shadow-[0_25px_60px_rgba(0,0,0,0.18)] md:inset-x-0 md:bottom-auto md:top-1/2 md:-translate-y-1/2">
+        <BaseDialog.Popup className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-2xl border border-white/60 bg-white/70 p-6 text-[#1c1c1e] shadow-[0_25px_60px_rgba(0,0,0,0.15)] backdrop-blur-2xl md:inset-x-0 md:bottom-auto md:top-1/2 md:-translate-y-1/2">
           <div className="mb-5 flex items-start justify-between gap-4">
             <div>
               <BaseDialog.Title className="text-xl font-semibold tracking-tight text-[#1c1c1e]">

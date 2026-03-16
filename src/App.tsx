@@ -43,18 +43,29 @@ export default function App() {
   const isFamilyMode = role === "family";
 
   return (
-    <div className="min-h-screen bg-[#f2f2f7] px-4 py-5 text-[#1c1c1e] md:px-6">
+    <div className="relative min-h-screen text-[#1c1c1e]">
+      {/* Shared warm gradient background */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-linear-to-br from-[#f5e6d3] via-[#ede0d4] to-[#e2d8ce]" />
+        <div className="absolute -top-1/4 -left-1/4 h-[80%] w-[80%] rounded-full bg-[#c8dbb6]/40 blur-[120px]" />
+        <div className="absolute -right-1/4 -bottom-1/4 h-[70%] w-[70%] rounded-full bg-[#f0cdb0]/50 blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 h-[50%] w-[50%] -translate-x-1/2 rounded-full bg-[#b8cfe0]/30 blur-[100px]" />
+      </div>
+
       {screen === "role" ? (
-        <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] max-w-sm items-center justify-center">
-          <GlassCard className="w-full rounded-[28px] bg-gradient-to-b from-white to-[#fafafa] p-6">
-            <div className="mb-6 text-center">
-              <div className="text-[11px] uppercase tracking-[0.06em] font-medium text-[#34C759]">
+        <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
+          {/* Extra warmth layer for role screen */}
+          <div className="absolute inset-0 -z-10 bg-black/3" />
+
+          <div className="w-full max-w-sm px-6">
+            <div className="mb-8 text-center">
+              <div className="text-[11px] uppercase tracking-[0.06em] font-semibold text-white/70">
                 CareMatch
               </div>
-              <h1 className="mt-2.5 text-[28px] font-bold tracking-[0.36px] text-[#1c1c1e]">
+              <h1 className="mt-2 text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
                 Kim jesteś?
               </h1>
-              <p className="mx-auto mt-2 max-w-64 text-[15px] leading-[20px] text-[#8e8e93]">
+              <p className="mx-auto mt-2 max-w-64 text-[15px] leading-5 text-[#3c3c43]/60">
                 Dopasujemy Cię do idealnego partnera opieki w kilka chwil.
               </p>
             </div>
@@ -66,16 +77,16 @@ export default function App() {
                 setScreen("discovery");
               }}
             />
-          </GlassCard>
+          </div>
         </div>
       ) : (
-        <div className="mx-auto max-w-md space-y-4 md:max-w-6xl">
-          <header className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-[0_1px_6px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto max-w-md space-y-4 px-4 py-5 md:max-w-6xl md:px-6">
+          <header className="flex items-center justify-between rounded-2xl border border-white/60 bg-white/50 px-4 py-3 shadow-[0_2px_16px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setScreen("role")}
-                className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7] text-[#8e8e93] transition hover:bg-[#e5e5ea]"
+                className="grid size-10 place-items-center rounded-xl bg-white/50 text-[#8e8e93] transition hover:bg-white/70"
                 aria-label="Wróć do wyboru trybu"
               >
                 <ArrowLeft className="size-5" />
@@ -186,7 +197,7 @@ export default function App() {
                         }
                         className="text-left"
                       >
-                        <div className="rounded-2xl border border-black/[0.06] bg-[#f9f9fb] p-4 transition hover:bg-[#f2f2f7]">
+                        <div className="rounded-2xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl transition hover:bg-white/55">
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
@@ -224,7 +235,7 @@ export default function App() {
                     {familyNeeds.map((need) => (
                       <div
                         key={need.id}
-                        className="rounded-xl border border-black/[0.04] bg-[#f9f9fb] p-4"
+                        className="rounded-xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl"
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
@@ -247,7 +258,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="space-y-3 rounded-xl border border-black/[0.04] bg-[#f9f9fb] p-4">
+                <div className="space-y-3 rounded-xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl">
                   <SectionTitle>Pattern intent</SectionTitle>
                   <ul className="space-y-2 text-sm leading-6 text-[#8e8e93]">
                     <li>
@@ -291,7 +302,7 @@ export default function App() {
         description="Bottom sheet stylizowany jak iOS glass panel. Tu możesz potem podpiąć prawdziwy czat lub formularz pierwszego kontaktu."
       >
         <div className="space-y-4">
-          <div className="rounded-xl bg-[#f2f2f7] p-4 text-sm leading-6 text-[#3c3c43]">
+          <div className="rounded-xl bg-white/40 p-4 text-sm leading-6 text-[#3c3c43] backdrop-blur-sm">
             <p>
               <strong className="text-[#1c1c1e]">{activeCaregiver.name}</strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz
@@ -321,7 +332,7 @@ interface IconBubbleProps {
 
 function IconBubble({ icon: Icon }: IconBubbleProps) {
   return (
-    <div className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7]">
+    <div className="grid size-10 place-items-center rounded-xl bg-white/50">
       <Icon className="size-5 text-[#8e8e93]" />
     </div>
   );
