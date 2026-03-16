@@ -59,6 +59,11 @@ export default function App() {
 
           <div className="w-full max-w-sm px-6">
             <div className="mb-8 text-center">
+              <img
+                src="/logo.png"
+                alt="CareMatch"
+                className="mx-auto mb-4 size-20 object-contain"
+              />
               <div className="text-[11px] uppercase tracking-[0.06em] font-semibold text-white/70">
                 CareMatch
               </div>
