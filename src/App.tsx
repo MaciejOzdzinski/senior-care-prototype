@@ -86,7 +86,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setScreen("role")}
-                className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7] text-[#8e8e93] transition hover:bg-[#e5e5ea]"
+                className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] text-[#007AFF] transition hover:bg-[#d1d1d6]"
                 aria-label="Wróć do wyboru trybu"
               >
                 <ArrowLeft className="size-5" />
@@ -332,8 +332,8 @@ interface IconBubbleProps {
 
 function IconBubble({ icon: Icon }: IconBubbleProps) {
   return (
-    <div className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7]">
-      <Icon className="size-5 text-[#8e8e93]" />
+    <div className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea]">
+      <Icon className="size-5 text-[#3c3c43]" />
     </div>
   );
 }
