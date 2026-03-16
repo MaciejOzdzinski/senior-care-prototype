@@ -86,7 +86,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setScreen("role")}
-                className="grid size-10 place-items-center rounded-xl bg-white/50 text-[#8e8e93] transition hover:bg-white/70"
+                className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7] text-[#8e8e93] transition hover:bg-[#e5e5ea]"
                 aria-label="Wróć do wyboru trybu"
               >
                 <ArrowLeft className="size-5" />
@@ -119,7 +119,7 @@ export default function App() {
                     <SectionTitle>
                       {isFamilyMode ? "Mapa dopasowań" : "Mapa zgłoszeń"}
                     </SectionTitle>
-                    <p className="mt-1 text-sm text-white/64">
+                    <p className="mt-1 text-sm text-[#8e8e93]">
                       {isFamilyMode
                         ? "Kliknięcie pinezki synchronizuje aktywną kartę niżej."
                         : "Widzisz przybliżone strefy rodzin i aktywne potrzeby opieki."}
@@ -197,7 +197,7 @@ export default function App() {
                         }
                         className="text-left"
                       >
-                        <div className="rounded-2xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl transition hover:bg-white/55">
+                        <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4 transition hover:bg-[#eaeaef]">
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
@@ -235,7 +235,7 @@ export default function App() {
                     {familyNeeds.map((need) => (
                       <div
                         key={need.id}
-                        className="rounded-xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl"
+                        className="rounded-xl border border-black/4 bg-[#f2f2f7] p-4"
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
@@ -258,7 +258,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="space-y-3 rounded-xl border border-white/50 bg-white/40 p-4 backdrop-blur-xl">
+                <div className="space-y-3 rounded-xl border border-black/4 bg-[#f2f2f7] p-4">
                   <SectionTitle>Pattern intent</SectionTitle>
                   <ul className="space-y-2 text-sm leading-6 text-[#8e8e93]">
                     <li>
@@ -302,7 +302,7 @@ export default function App() {
         description="Bottom sheet stylizowany jak iOS glass panel. Tu możesz potem podpiąć prawdziwy czat lub formularz pierwszego kontaktu."
       >
         <div className="space-y-4">
-          <div className="rounded-xl bg-white/40 p-4 text-sm leading-6 text-[#3c3c43] backdrop-blur-sm">
+          <div className="rounded-xl bg-[#f2f2f7] p-4 text-sm leading-6 text-[#3c3c43]">
             <p>
               <strong className="text-[#1c1c1e]">{activeCaregiver.name}</strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz
@@ -332,7 +332,7 @@ interface IconBubbleProps {
 
 function IconBubble({ icon: Icon }: IconBubbleProps) {
   return (
-    <div className="grid size-10 place-items-center rounded-xl bg-white/50">
+    <div className="grid size-10 place-items-center rounded-xl bg-[#f2f2f7]">
       <Icon className="size-5 text-[#8e8e93]" />
     </div>
   );

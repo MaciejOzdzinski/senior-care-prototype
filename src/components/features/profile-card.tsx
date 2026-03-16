@@ -62,7 +62,7 @@ export function ProfileCard({
           ))}
         </div>
 
-        <div className="grid gap-3 rounded-xl bg-white/40 p-4 backdrop-blur-sm md:grid-cols-3">
+        <div className="grid gap-3 rounded-xl bg-[#f2f2f7] p-4 md:grid-cols-3">
           <Metric label="Dostępność" value={caregiver.availableLabel} />
           <Metric
             label="Doświadczenie"
@@ -71,7 +71,7 @@ export function ProfileCard({
           <Metric label="Stawka" value={`${caregiver.hourlyRate} zł / h`} />
         </div>
 
-        <div className="space-y-3 rounded-xl bg-white/40 p-4 backdrop-blur-sm">
+        <div className="space-y-3 rounded-xl bg-[#f2f2f7] p-4">
           <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8e8e93]">
             Dlaczego pasuje
           </div>
