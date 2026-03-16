@@ -8,7 +8,7 @@ export function SectionTitle({
   return (
     <h2
       className={cn(
-        "text-[15px] font-semibold tracking-wide text-[#1c1c1e]",
+        "text-[20px] font-semibold tracking-[0.38px] text-[#1c1c1e]",
         className,
       )}
       {...props}

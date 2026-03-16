@@ -46,17 +46,16 @@ export default function App() {
     <div className="min-h-screen bg-[#f2f2f7] px-4 py-5 text-[#1c1c1e] md:px-6">
       {screen === "role" ? (
         <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] max-w-sm items-center justify-center">
-          <GlassCard className="w-full rounded-[28px] p-6">
+          <GlassCard className="w-full rounded-[28px] bg-gradient-to-b from-white to-[#fafafa] p-6">
             <div className="mb-6 text-center">
-              <div className="text-[11px] uppercase tracking-[0.3em] text-[#8e8e93]">
+              <div className="text-[11px] uppercase tracking-[0.06em] font-medium text-[#34C759]">
                 CareMatch
               </div>
-              <h1 className="mt-2.5 text-[1.65rem] font-semibold tracking-[-0.025em] text-[#1c1c1e]">
-                Wybierz swój tryb
+              <h1 className="mt-2.5 text-[28px] font-bold tracking-[0.36px] text-[#1c1c1e]">
+                Kim jesteś?
               </h1>
-              <p className="mx-auto mt-2 max-w-70 text-[0.88rem] leading-normal text-[#8e8e93]">
-                Każda ścieżka prowadzi do ekranu discovery z mapą i
-                dopasowaniami.
+              <p className="mx-auto mt-2 max-w-64 text-[15px] leading-[20px] text-[#8e8e93]">
+                Dopasujemy Cię do idealnego partnera opieki w kilka chwil.
               </p>
             </div>
 
@@ -82,13 +81,13 @@ export default function App() {
                 <ArrowLeft className="size-5" />
               </button>
               <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-[#8e8e93]">
+                <div className="text-[11px] uppercase tracking-[0.06em] font-medium text-[#8e8e93]">
                   CareMatch
                 </div>
-                <div className="mt-0.5 text-base font-semibold text-[#1c1c1e]">
+                <div className="mt-0.5 text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
                   {mapCenter.district}
                 </div>
-                <p className="text-sm text-[#8e8e93]">
+                <p className="text-[13px] leading-[18px] text-[#8e8e93]">
                   {isFamilyMode
                     ? "Odkrywaj opiekunów przez karty i mapę"
                     : "Odkrywaj rodziny przez karty i mapę"}
@@ -138,17 +137,9 @@ export default function App() {
             <section className="space-y-4">
               <GlassCard className="p-4">
                 <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <SectionTitle>
-                      {isFamilyMode
-                        ? "Szybkie dopasowania"
-                        : "Szybki przegląd zgłoszeń"}
-                    </SectionTitle>
-                    <p className="mt-1 text-sm text-[#8e8e93]">
-                      Discovery pattern inspirowany deckiem kart. Mapa daje
-                      kontekst gdzie, karta pokazuje kto i dlaczego pasuje.
-                    </p>
-                  </div>
+                  <SectionTitle>
+                    {isFamilyMode ? "Dla Ciebie" : "Zgłoszenia w pobliżu"}
+                  </SectionTitle>
                   <DiscoverySwitcher
                     value={discoveryMode}
                     onChange={setDiscoveryMode}
@@ -198,10 +189,10 @@ export default function App() {
                         <div className="rounded-2xl border border-black/[0.06] bg-[#f9f9fb] p-4 transition hover:bg-[#f2f2f7]">
                           <div className="flex items-center justify-between gap-3">
                             <div>
-                              <div className="text-lg font-semibold text-[#1c1c1e]">
+                              <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
                                 {caregiver.name}
                               </div>
-                              <div className="text-sm text-[#8e8e93]">
+                              <div className="text-[13px] leading-[18px] text-[#8e8e93]">
                                 {caregiver.distanceKm.toFixed(1)} km ·{" "}
                                 {caregiver.hourlyRate} zł/h
                               </div>
@@ -237,10 +228,10 @@ export default function App() {
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
-                            <div className="text-base font-semibold text-[#1c1c1e]">
+                            <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
                               {need.title}
                             </div>
-                            <div className="mt-1 text-sm text-[#8e8e93]">
+                            <div className="mt-1 text-[13px] leading-[18px] text-[#8e8e93]">
                               {need.district} · {need.hours}
                             </div>
                           </div>

@@ -31,7 +31,7 @@ export function ProfileCard({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-[22px] font-semibold tracking-tight text-[#1c1c1e]">
+              <h3 className="text-[22px] font-bold tracking-[0.35px] text-[#1c1c1e]">
                 {caregiver.name}
               </h3>
               {caregiver.verified ? (
@@ -40,7 +40,7 @@ export function ProfileCard({
                 </Badge>
               ) : null}
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#8e8e93]">
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-[13px] leading-[18px] text-[#8e8e93]">
               <span>{caregiver.age} lat</span>
               <span>•</span>
               <span>{caregiver.distanceKm.toFixed(1)} km</span>
@@ -72,14 +72,14 @@ export function ProfileCard({
         </div>
 
         <div className="space-y-3 rounded-xl bg-[#f9f9fb] p-4">
-          <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#8e8e93]">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8e8e93]">
             Dlaczego pasuje
           </div>
           <ul className="space-y-2">
             {caregiver.whyMatch.map((reason) => (
               <li
                 key={reason}
-                className="flex items-start gap-3 text-sm leading-6 text-[#3c3c43]"
+                className="flex items-start gap-3 text-[15px] leading-[20px] text-[#3c3c43]"
               >
                 <div className="mt-1.5 size-2 rounded-full bg-[#34C759]" />
                 <span>{reason}</span>
@@ -100,7 +100,7 @@ export function ProfileCard({
           </Button>
         </div>
 
-        <button className="inline-flex items-center gap-2 self-start text-sm font-medium text-[#007AFF] transition hover:text-[#0071E3]">
+        <button className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#007AFF] transition hover:text-[#0071E3]">
           Zobacz pełny profil
           <ArrowRight className="size-4" />
         </button>
@@ -117,10 +117,10 @@ interface MetricProps {
 function Metric({ label, value }: MetricProps) {
   return (
     <div className="space-y-1.5">
-      <div className="text-[12px] uppercase tracking-[0.16em] text-[#8e8e93]">
+      <div className="text-[11px] uppercase tracking-[0.06em] text-[#8e8e93]">
         {label}
       </div>
-      <div className="text-sm font-medium leading-5 text-[#1c1c1e]">
+      <div className="text-[15px] font-medium leading-[20px] text-[#1c1c1e]">
         {value}
       </div>
     </div>

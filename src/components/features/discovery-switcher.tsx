@@ -1,5 +1,4 @@
 import { Tabs } from "@base-ui/react/tabs";
-import { LayoutPanelTop, Map } from "lucide-react";
 import type { DiscoveryMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
@@ -14,14 +13,9 @@ export function DiscoverySwitcher({ value, onChange }: DiscoverySwitcherProps) {
       value={value}
       onValueChange={(next) => onChange(next as DiscoveryMode)}
     >
-      <Tabs.List className="grid grid-cols-2 gap-1 rounded-full bg-[#f2f2f7] p-1">
-        <SwitcherTab
-          value="cards"
-          icon={LayoutPanelTop}
-          label="Karty"
-          activeValue={value}
-        />
-        <SwitcherTab value="map" icon={Map} label="Mapa" activeValue={value} />
+      <Tabs.List className="relative grid grid-cols-2 rounded-lg bg-black/[0.06] p-0.5">
+        <SwitcherTab value="cards" label="Karty" activeValue={value} />
+        <SwitcherTab value="map" label="Mapa" activeValue={value} />
       </Tabs.List>
     </Tabs.Root>
   );
@@ -30,29 +24,22 @@ export function DiscoverySwitcher({ value, onChange }: DiscoverySwitcherProps) {
 interface SwitcherTabProps {
   value: DiscoveryMode;
   label: string;
-  icon: typeof Map;
   activeValue: DiscoveryMode;
 }
 
-function SwitcherTab({
-  value,
-  label,
-  icon: Icon,
-  activeValue,
-}: SwitcherTabProps) {
+function SwitcherTab({ value, label, activeValue }: SwitcherTabProps) {
   const active = value === activeValue;
 
   return (
     <Tabs.Tab
       value={value}
       className={cn(
-        "inline-flex h-11 items-center justify-center gap-2 rounded-full text-sm font-medium outline-none transition-all",
+        "inline-flex h-8 items-center justify-center rounded-md px-4 text-[13px] font-medium outline-none transition-all",
         active
-          ? "bg-white text-[#1c1c1e] shadow-[0_1px_4px_rgba(0,0,0,0.1)]"
-          : "text-[#8e8e93] hover:text-[#1c1c1e]",
+          ? "bg-white text-[#1c1c1e] shadow-[0_0.5px_2px_rgba(0,0,0,0.12),0_0.5px_1px_rgba(0,0,0,0.08)]"
+          : "text-[#8e8e93]",
       )}
     >
-      <Icon className="size-4" />
       {label}
     </Tabs.Tab>
   );
