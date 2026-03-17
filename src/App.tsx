@@ -87,31 +87,22 @@ export default function App() {
         </div>
       ) : (
         <div className="mx-auto max-w-md space-y-4 px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
-          {/* Apple HIG Large Title header */}
-          <header className="space-y-2 px-1">
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => setScreen("role")}
-                className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] text-[#007AFF] transition-all duration-200 active:scale-95 active:bg-[#d1d1d6]"
-                aria-label="Wróć do wyboru trybu"
-              >
-                <ArrowLeft className="size-5" />
-              </button>
-              <div className="flex items-center gap-2">
-                <IconBubble icon={Bell} label="Powiadomienia" />
-                <IconBubble icon={Filter} label="Filtry" />
-              </div>
-            </div>
-            <div>
-              <h1 className="text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
-                {mapCenter.district}
-              </h1>
-              <p className="mt-0.5 text-[15px] leading-5 text-[#8e8e93]">
-                {isFamilyMode
-                  ? "Odkrywaj opiekunów przez karty i mapę"
-                  : "Odkrywaj rodziny przez karty i mapę"}
-              </p>
+          {/* Apple HIG inline navigation bar */}
+          <header className="flex items-center gap-3 px-1">
+            <button
+              type="button"
+              onClick={() => setScreen("role")}
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-white/80 text-[#007AFF] shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-200 active:scale-95 active:bg-white/60"
+              aria-label="Wróć do wyboru trybu"
+            >
+              <ArrowLeft className="size-5" />
+            </button>
+            <h1 className="min-w-0 flex-1 truncate text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
+              {mapCenter.district}
+            </h1>
+            <div className="flex shrink-0 items-center gap-2">
+              <IconBubble icon={Bell} label="Powiadomienia" />
+              <IconBubble icon={Filter} label="Filtry" />
             </div>
           </header>
 
@@ -360,9 +351,9 @@ function IconBubble({ icon: Icon, label }: IconBubbleProps) {
     <button
       type="button"
       aria-label={label}
-      className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] transition-all duration-200 active:scale-95 active:bg-[#d1d1d6]"
+      className="grid size-10 place-items-center rounded-full bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-200 active:scale-95 active:bg-white/60"
     >
-      <Icon className="size-5 text-[#3c3c43]" />
+      <Icon className="size-5 text-[#1c1c1e]" />
     </button>
   );
 }
