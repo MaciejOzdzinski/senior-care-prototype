@@ -7,6 +7,7 @@ import {
   Star,
   X,
 } from "lucide-react";
+import { motion } from "motion/react";
 import type { CaregiverProfile } from "@/types/domain";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -28,13 +29,15 @@ export function ProfileCard({
 }: ProfileCardProps) {
   return (
     <GlassCard className="relative h-[360px] overflow-hidden p-4">
-      <div
+      <motion.div
         role="button"
         tabIndex={0}
         onClick={onTapCard}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") onTapCard?.();
         }}
+        whileTap={{ scale: 0.97, opacity: 0.7 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="flex h-full flex-col gap-3 cursor-pointer"
       >
         {/* Top row: avatar + info + price */}
@@ -126,7 +129,7 @@ export function ProfileCard({
             <Heart className="size-4" /> Kontakt
           </Button>
         </div>
-      </div>
+      </motion.div>
     </GlassCard>
   );
 }
