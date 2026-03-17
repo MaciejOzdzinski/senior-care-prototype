@@ -155,28 +155,32 @@ export default function App() {
                   </div>
                   <Badge>{isFamilyMode ? "3 km" : "2 aktywne zlecenia"}</Badge>
                 </div>
-                <FakeMap
-                  role={role}
-                  activeCaregiverId={activeCaregiver.id}
-                  filteredCaregivers={filteredCaregivers}
-                  onSelectCaregiver={(id) => {
-                    const index = filteredCaregivers.findIndex(
-                      (profile) => profile.id === id,
-                    );
-                    if (index >= 0) setActiveIndex(index);
-                  }}
-                />
-              </GlassCard>
-              <div className="flex gap-2 overflow-x-auto scrollbar-none">
-                {allSpecializations.map((tag) => (
-                  <FilterChip
-                    key={tag.id}
-                    label={tag.label}
-                    active={activeFilters.has(tag.id)}
-                    onClick={() => toggleFilter(tag.id)}
+                <div className="relative">
+                  <FakeMap
+                    role={role}
+                    activeCaregiverId={activeCaregiver.id}
+                    filteredCaregivers={filteredCaregivers}
+                    onSelectCaregiver={(id) => {
+                      const index = filteredCaregivers.findIndex(
+                        (profile) => profile.id === id,
+                      );
+                      if (index >= 0) setActiveIndex(index);
+                    }}
                   />
-                ))}
-              </div>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-linear-to-t from-black/25 to-transparent pt-8 pb-2.5 px-3">
+                    <div className="pointer-events-auto flex gap-2 overflow-x-auto scrollbar-none">
+                      {allSpecializations.map((tag) => (
+                        <FilterChip
+                          key={tag.id}
+                          label={tag.label}
+                          active={activeFilters.has(tag.id)}
+                          onClick={() => toggleFilter(tag.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </GlassCard>
             </section>
 
             <section className="min-w-0 space-y-4">
