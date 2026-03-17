@@ -114,7 +114,7 @@ export default function App() {
           </div>
         </div>
       ) : (
-        <div className="mx-auto max-w-md space-y-4 overflow-hidden px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
+        <div className="mx-auto max-w-md space-y-4 overflow-hidden px-4 pb-20 pt-[max(env(safe-area-inset-top),20px)] md:max-w-6xl md:px-6">
           {/* Apple HIG inline navigation bar */}
           <header className="flex items-center gap-3 px-1">
             <motion.button
@@ -139,8 +139,8 @@ export default function App() {
           <main className="grid min-w-0 gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-start">
             <section className="min-w-0 space-y-4">
               <GlassCard className="p-4">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <div>
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
                     <SectionTitle>
                       {isFamilyMode ? "Mapa dopasowań" : "Mapa zgłoszeń"}
                     </SectionTitle>
@@ -150,7 +150,9 @@ export default function App() {
                         : "Widzisz przybliżone strefy rodzin i aktywne potrzeby opieki."}
                     </p>
                   </div>
-                  <Badge>{isFamilyMode ? "3 km" : "2 aktywne zlecenia"}</Badge>
+                  <Badge className="shrink-0 self-start">
+                    {isFamilyMode ? "3 km" : "2 aktywne zlecenia"}
+                  </Badge>
                 </div>
                 <div className="relative">
                   <FakeMap
