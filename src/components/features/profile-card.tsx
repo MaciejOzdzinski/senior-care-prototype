@@ -16,6 +16,7 @@ interface ProfileCardProps {
   onSkip: () => void;
   onSave: () => void;
   onContact: () => void;
+  onTapCard?: () => void;
 }
 
 export function ProfileCard({
@@ -23,10 +24,19 @@ export function ProfileCard({
   onSkip,
   onSave,
   onContact,
+  onTapCard,
 }: ProfileCardProps) {
   return (
     <GlassCard className="relative h-[360px] overflow-hidden p-4">
-      <div className="flex h-full flex-col gap-3">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onTapCard}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") onTapCard?.();
+        }}
+        className="flex h-full flex-col gap-3 cursor-pointer"
+      >
         {/* Top row: avatar + info + price */}
         <div className="flex items-start gap-3">
           <img
@@ -100,7 +110,12 @@ export function ProfileCard({
         </div>
 
         {/* Action buttons */}
-        <div className="grid grid-cols-3 gap-2 pt-0.5">
+        {/* Stop propagation so these buttons don't trigger onTapCard */}
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+        <div
+          className="grid grid-cols-3 gap-2 pt-0.5"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Button variant="destructive" onClick={onSkip}>
             <X className="size-4" /> Pomiń
           </Button>

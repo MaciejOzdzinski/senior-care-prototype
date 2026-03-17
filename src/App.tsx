@@ -16,6 +16,7 @@ import { ProfileCard } from "@/components/features/profile-card";
 import { RoleSelector } from "@/components/features/role-selector";
 import { SwipeCard } from "@/components/features/swipe-card";
 import { SwipeHint } from "@/components/features/swipe-hint";
+import { ProfileDrawer } from "@/components/features/profile-drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
@@ -37,6 +38,7 @@ export default function App() {
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("cards");
   const [activeIndex, setActiveIndex] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 
   const toggleFilter = (id: string) => {
@@ -218,6 +220,7 @@ export default function App() {
                   >
                     <ProfileCard
                       caregiver={activeCaregiver}
+                      onTapCard={() => setDrawerOpen(true)}
                       onSkip={() =>
                         setActiveIndex((current) =>
                           nextIndex(current, filteredCaregivers.length),
@@ -325,6 +328,17 @@ export default function App() {
           </div>
         </div>
       </GlassDialog>
+
+      <ProfileDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        caregiver={activeCaregiver}
+        onContact={() => {
+          setDrawerOpen(false);
+          setDialogOpen(true);
+        }}
+        onSave={() => setDrawerOpen(false)}
+      />
     </div>
   );
 }
