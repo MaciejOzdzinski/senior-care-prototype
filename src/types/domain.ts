@@ -18,6 +18,7 @@ export interface CaregiverProfile {
   yearsExperience: number;
   compatibility: number;
   avatarGradient: string;
+  avatarUrl: string;
   specializations: CapabilityTag[];
   whyMatch: string[];
   lat: number;

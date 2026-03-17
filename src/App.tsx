@@ -9,12 +9,7 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
-import {
-  caregivers,
-  familyNeeds,
-  mapCenter,
-  allSpecializations,
-} from "@/data/mock-data";
+import { caregivers, mapCenter, allSpecializations } from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
 import { ProfileCard } from "@/components/features/profile-card";
@@ -202,7 +197,7 @@ export default function App() {
                   {deckPreview.map((item, index) => (
                     <GlassCard
                       key={item.id}
-                      className={`absolute inset-x-5 top-4 -z-10 h-[420px] opacity-60 blur-[0.3px] ${index === 0 ? "translate-y-4 scale-[0.97]" : "translate-y-8 scale-[0.94]"}`}
+                      className={`absolute inset-x-5 top-4 -z-10 h-[360px] opacity-60 blur-[0.3px] ${index === 0 ? "translate-y-4 scale-[0.97]" : "translate-y-8 scale-[0.94]"}`}
                     />
                   ))}
                   <SwipeCard
@@ -283,66 +278,6 @@ export default function App() {
                   </div>
                 </GlassCard>
               )}
-
-              <GlassCard className="grid gap-4 p-4 md:grid-cols-[1fr_320px] md:p-5">
-                <div>
-                  <SectionTitle>
-                    {isFamilyMode
-                      ? "Krótka lista potrzeb"
-                      : "Twoja okolica dziś"}
-                  </SectionTitle>
-                  <div className="mt-3 space-y-3">
-                    {familyNeeds.map((need) => (
-                      <div
-                        key={need.id}
-                        className="rounded-xl border border-black/4 bg-[#f2f2f7] p-4"
-                      >
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div>
-                            <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
-                              {need.title}
-                            </div>
-                            <div className="mt-1 text-[13px] leading-[18px] text-[#8e8e93]">
-                              {need.district} · {need.hours}
-                            </div>
-                          </div>
-                          <Badge>{need.budget}</Badge>
-                        </div>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {need.needs.map((tag) => (
-                            <Badge key={tag.id}>{tag.label}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-3 rounded-xl border border-black/4 bg-[#f2f2f7] p-4">
-                  <SectionTitle>Pattern intent</SectionTitle>
-                  <ul className="space-y-2 text-sm leading-6 text-[#8e8e93]">
-                    <li>
-                      • Pierwszy ekran: tylko dwie karty-decki z natychmiastowym
-                      wejściem.
-                    </li>
-                    <li>
-                      • Drugi ekran: mapa + discovery cards w stylu trust-first
-                      Tinder pattern.
-                    </li>
-                    <li>
-                      • W tle nadal premium liquid glass zamiast ciężkiego
-                      portalu ogłoszeń.
-                    </li>
-                  </ul>
-                  <Button
-                    size="lg"
-                    className="w-full"
-                    onClick={() => setDialogOpen(true)}
-                  >
-                    Otwórz bottom sheet kontaktu
-                  </Button>
-                </div>
-              </GlassCard>
             </section>
           </main>
 

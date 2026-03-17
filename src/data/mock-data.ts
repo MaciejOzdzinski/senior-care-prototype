@@ -13,6 +13,7 @@ export const caregivers: CaregiverProfile[] = [
     yearsExperience: 5,
     compatibility: 94,
     avatarGradient: "from-cyan-200/80 via-white/70 to-blue-300/60",
+    avatarUrl: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=160&h=160&fit=crop&crop=face",
     specializations: [
       { id: "companion", label: "Towarzyszenie" },
       { id: "shopping", label: "Zakupy" },
@@ -39,6 +40,7 @@ export const caregivers: CaregiverProfile[] = [
     yearsExperience: 4,
     compatibility: 89,
     avatarGradient: "from-sky-200/80 via-white/70 to-indigo-300/60",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&crop=face",
     specializations: [
       { id: "mobility", label: "Mobilność" },
       { id: "rehab", label: "Po hospitalizacji" },
@@ -65,6 +67,7 @@ export const caregivers: CaregiverProfile[] = [
     yearsExperience: 9,
     compatibility: 87,
     avatarGradient: "from-teal-200/80 via-white/70 to-cyan-300/60",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=160&h=160&fit=crop&crop=face",
     specializations: [
       { id: "meals", label: "Posiłki" },
       { id: "meds", label: "Leki" },

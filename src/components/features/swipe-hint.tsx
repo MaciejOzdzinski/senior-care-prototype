@@ -16,7 +16,7 @@ export function SwipeHint() {
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 flex items-end justify-center pb-24">
+    <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center pt-10">
       <div className="animate-swipe-hint rounded-full bg-black/60 px-6 py-3 text-[15px] font-medium text-white backdrop-blur-sm">
         ← Przesuń kartę w lewo lub prawo →
       </div>
