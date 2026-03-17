@@ -197,7 +197,11 @@ export default function App() {
                   {deckPreview.map((item, index) => (
                     <GlassCard
                       key={item.id}
-                      className={`absolute inset-x-5 top-4 -z-10 h-[360px] opacity-60 blur-[0.3px] ${index === 0 ? "translate-y-4 scale-[0.97]" : "translate-y-8 scale-[0.94]"}`}
+                      className={`absolute -z-10 h-[360px] transition-all duration-300 ${
+                        index === 0
+                          ? "inset-x-0 translate-x-[-4px] translate-y-2 rotate-[2deg] scale-[0.97] opacity-50"
+                          : "inset-x-0 translate-x-[-8px] translate-y-4 rotate-[4deg] scale-[0.94] opacity-30"
+                      }`}
                     />
                   ))}
                   <SwipeCard
