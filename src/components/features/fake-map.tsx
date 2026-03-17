@@ -1,4 +1,3 @@
-import { ShieldCheck } from "lucide-react";
 import { caregivers, familyNeeds, mapCenter } from "@/data/mock-data";
 import type { RoleMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
@@ -49,9 +48,10 @@ export function FakeMap({
         {mapCenter.district}
       </div>
 
-      {/* Center marker — shield */}
-      <div className="absolute left-[44%] top-[38%] z-10 grid size-11 place-items-center rounded-full bg-[#34C759] text-white shadow-[0_2px_10px_rgba(52,199,89,0.45),0_0_0_4px_rgba(52,199,89,0.15)]">
-        <ShieldCheck className="size-5" />
+      {/* User location — blue pulsing dot (Apple Maps style) */}
+      <div className="absolute left-[44%] top-[38%] z-10 grid size-5 place-items-center">
+        <div className="absolute size-5 rounded-full bg-[#007AFF]/20 animate-pulse-blue" />
+        <div className="size-3 rounded-full border-2 border-white bg-[#007AFF] shadow-[0_1px_4px_rgba(0,122,255,0.4)]" />
       </div>
 
       {/* Caregiver pins */}

@@ -1,4 +1,4 @@
-import { ArrowRight, Bookmark, Heart, Star, X } from "lucide-react";
+import { ArrowRight, Bookmark, Heart, Info, Star, X } from "lucide-react";
 import type { CaregiverProfile } from "@/types/domain";
 import { formatCompatibility } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -50,8 +50,9 @@ export function ProfileCard({
                 {caregiver.rating} ({caregiver.reviews})
               </span>
             </div>
-            <div className="mt-3 inline-flex rounded-full bg-[#007AFF]/10 px-3 py-1 text-[12px] font-medium text-[#007AFF]">
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#007AFF]/10 px-3 py-1 text-[12px] font-medium text-[#007AFF]">
               {formatCompatibility(caregiver.compatibility)}
+              <Info className="size-3.5 opacity-60" />
             </div>
           </div>
         </div>

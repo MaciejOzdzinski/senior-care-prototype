@@ -40,3 +40,47 @@ textarea {
   background: rgba(0, 122, 255, 0.2);
   color: #1c1c1e;
 }
+
+/* Swipe onboarding hint */
+@keyframes swipe-hint {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(40px);
+  }
+  40% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(-40px);
+  }
+  80% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+}
+
+.animate-swipe-hint {
+  animation: swipe-hint 3s ease-in-out forwards;
+}
+
+/* Blue pulsing dot — user location on map */
+@keyframes pulse-blue {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+  }
+}
+
+.animate-pulse-blue {
+  animation: pulse-blue 2s ease-in-out infinite;
+}

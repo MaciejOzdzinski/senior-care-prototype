@@ -1,4 +1,4 @@
-import { HeartHandshake, UserRoundSearch } from "lucide-react";
+import { ChevronRight, HeartHandshake, UserRoundSearch } from "lucide-react";
 import type { RoleMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +48,7 @@ export function RoleSelector({ value, onChange }: RoleSelectorProps) {
                 className={cn(
                   "relative overflow-hidden rounded-2xl border px-5 py-5 transition-all duration-200",
                   "bg-white/40 backdrop-blur-2xl shadow-[0_2px_16px_rgba(0,0,0,0.08)]",
+                  "group-active:scale-[0.97] group-active:bg-white/60",
                   isActive
                     ? "border-white/70 bg-white/55"
                     : "border-white/40 group-hover:border-white/60 group-hover:bg-white/50",
@@ -65,6 +66,7 @@ export function RoleSelector({ value, onChange }: RoleSelectorProps) {
                       {description}
                     </p>
                   </div>
+                  <ChevronRight className="size-5 shrink-0 text-[#c7c7cc] transition-transform duration-200 group-active:translate-x-0.5" />
                 </div>
               </div>
             </button>

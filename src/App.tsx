@@ -2,17 +2,19 @@ import { useMemo, useState } from "react";
 import {
   ArrowLeft,
   Bell,
-  Compass,
   Filter,
+  House,
   MessageCircleMore,
-  Search,
   UserRound,
+  Users,
 } from "lucide-react";
 import { caregivers, familyNeeds, mapCenter } from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
 import { ProfileCard } from "@/components/features/profile-card";
 import { RoleSelector } from "@/components/features/role-selector";
+import { SwipeCard } from "@/components/features/swipe-card";
+import { SwipeHint } from "@/components/features/swipe-hint";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -60,17 +62,17 @@ export default function App() {
           <div className="absolute inset-0 -z-10 bg-black/3" />
 
           <div className="w-full max-w-sm px-6">
-            <div className="mb-8 text-center">
+            <div className="mb-6 text-center">
               <img
                 src={logoSrc}
                 alt="CareMatch"
-                className="mx-auto mb-4 size-[180px] object-contain"
+                className="mx-auto mb-4 size-25 object-contain"
               />
               <h1 className="text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
                 Kim jesteś?
               </h1>
               <p className="mx-auto mt-2 max-w-64 text-[15px] leading-5 text-[#3c3c43]/60">
-                Dopasujemy Cię do idealnego partnera opieki w kilka chwil.
+                Dopasujemy Cię do idealnego opiekuna w kilka chwil.
               </p>
             </div>
 
@@ -84,34 +86,32 @@ export default function App() {
           </div>
         </div>
       ) : (
-        <div className="mx-auto max-w-md space-y-4 px-4 py-5 md:max-w-6xl md:px-6">
-          <header className="flex items-center justify-between rounded-2xl border border-white/60 bg-white/50 px-4 py-3 shadow-[0_2px_16px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
-            <div className="flex items-center gap-3">
+        <div className="mx-auto max-w-md space-y-4 px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
+          {/* Apple HIG Large Title header */}
+          <header className="space-y-2 px-1">
+            <div className="flex items-center justify-between">
               <button
                 type="button"
                 onClick={() => setScreen("role")}
-                className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] text-[#007AFF] transition hover:bg-[#d1d1d6]"
+                className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] text-[#007AFF] transition-all duration-200 active:scale-95 active:bg-[#d1d1d6]"
                 aria-label="Wróć do wyboru trybu"
               >
                 <ArrowLeft className="size-5" />
               </button>
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.06em] font-medium text-[#8e8e93]">
-                  CareMatch
-                </div>
-                <div className="mt-0.5 text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
-                  {mapCenter.district}
-                </div>
-                <p className="text-[13px] leading-[18px] text-[#8e8e93]">
-                  {isFamilyMode
-                    ? "Odkrywaj opiekunów przez karty i mapę"
-                    : "Odkrywaj rodziny przez karty i mapę"}
-                </p>
+              <div className="flex items-center gap-2">
+                <IconBubble icon={Bell} label="Powiadomienia" />
+                <IconBubble icon={Filter} label="Filtry" />
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <IconBubble icon={Bell} />
-              <IconBubble icon={Filter} />
+            <div>
+              <h1 className="text-[34px] font-bold tracking-[0.37px] text-[#1c1c1e]">
+                {mapCenter.district}
+              </h1>
+              <p className="mt-0.5 text-[15px] leading-5 text-[#8e8e93]">
+                {isFamilyMode
+                  ? "Odkrywaj opiekunów przez karty i mapę"
+                  : "Odkrywaj rodziny przez karty i mapę"}
+              </p>
             </div>
           </header>
 
@@ -164,26 +164,40 @@ export default function App() {
 
               {discoveryMode === "cards" ? (
                 <div className="relative">
+                  <SwipeHint />
                   {deckPreview.map((item, index) => (
                     <GlassCard
                       key={item.id}
                       className={`absolute inset-x-5 top-4 -z-10 h-[420px] opacity-60 blur-[0.3px] ${index === 0 ? "translate-y-4 scale-[0.97]" : "translate-y-8 scale-[0.94]"}`}
                     />
                   ))}
-                  <ProfileCard
-                    caregiver={activeCaregiver}
-                    onSkip={() =>
+                  <SwipeCard
+                    onSwipeLeft={() =>
                       setActiveIndex((current) =>
                         nextIndex(current, caregivers.length),
                       )
                     }
-                    onSave={() =>
+                    onSwipeRight={() =>
                       setActiveIndex((current) =>
                         nextIndex(current, caregivers.length),
                       )
                     }
-                    onContact={() => setDialogOpen(true)}
-                  />
+                  >
+                    <ProfileCard
+                      caregiver={activeCaregiver}
+                      onSkip={() =>
+                        setActiveIndex((current) =>
+                          nextIndex(current, caregivers.length),
+                        )
+                      }
+                      onSave={() =>
+                        setActiveIndex((current) =>
+                          nextIndex(current, caregivers.length),
+                        )
+                      }
+                      onContact={() => setDialogOpen(true)}
+                    />
+                  </SwipeCard>
                 </div>
               ) : (
                 <GlassCard className="space-y-4 p-4 md:p-5">
@@ -292,10 +306,14 @@ export default function App() {
             </section>
           </main>
 
-          <nav className="grid grid-cols-4 gap-0.5 rounded-2xl border border-white/60 bg-white/50 px-2 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-2xl md:max-w-md">
-            <BottomNavItem icon={Compass} label="Start" active />
-            <BottomNavItem icon={Search} label="Odkrywaj" />
-            <BottomNavItem icon={MessageCircleMore} label="Wiadomości" />
+          <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl md:static md:mx-auto md:max-w-md md:rounded-2xl md:border md:border-white/60 md:bg-white/50 md:pb-2 md:shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]">
+            <BottomNavItem icon={House} label="Główna" active />
+            <BottomNavItem icon={Users} label="Odkrywaj" />
+            <BottomNavItem
+              icon={MessageCircleMore}
+              label="Wiadomości"
+              badgeCount={3}
+            />
             <BottomNavItem icon={UserRound} label="Profil" />
           </nav>
         </div>
@@ -334,36 +352,50 @@ export default function App() {
 
 interface IconBubbleProps {
   icon: typeof Bell;
+  label?: string;
 }
 
-function IconBubble({ icon: Icon }: IconBubbleProps) {
+function IconBubble({ icon: Icon, label }: IconBubbleProps) {
   return (
-    <div className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea]">
+    <button
+      type="button"
+      aria-label={label}
+      className="grid size-10 place-items-center rounded-xl bg-[#e5e5ea] transition-all duration-200 active:scale-95 active:bg-[#d1d1d6]"
+    >
       <Icon className="size-5 text-[#3c3c43]" />
-    </div>
+    </button>
   );
 }
 
 interface BottomNavItemProps {
-  icon: typeof Compass;
+  icon: typeof House;
   label: string;
   active?: boolean;
+  badgeCount?: number;
 }
 
 function BottomNavItem({
   icon: Icon,
   label,
   active = false,
+  badgeCount,
 }: BottomNavItemProps) {
   return (
     <button
       type="button"
-      className={`inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] transition ${
+      className={`relative inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] transition-all duration-200 active:scale-90 active:opacity-70 ${
         active ? "text-[#007AFF]" : "text-[#8e8e93]"
       }`}
     >
-      <Icon className="size-4.5" />
-      <span>{label}</span>
+      <div className="relative">
+        <Icon className="size-5.5" strokeWidth={active ? 2.2 : 1.8} />
+        {badgeCount != null && badgeCount > 0 ? (
+          <span className="absolute -right-2 -top-1 flex size-4 items-center justify-center rounded-full bg-[#FF3B30] text-[10px] font-bold leading-none text-white shadow-sm">
+            {badgeCount}
+          </span>
+        ) : null}
+      </div>
+      <span className="font-medium">{label}</span>
     </button>
   );
 }
