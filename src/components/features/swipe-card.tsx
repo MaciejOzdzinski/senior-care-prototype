@@ -14,6 +14,7 @@ interface SwipeCardProps {
 
 const SWIPE_THRESHOLD = 80;
 const ROTATION_FACTOR = 0.12;
+const DIRECTION_LOCK_THRESHOLD = 10;
 
 export function SwipeCard({
   onSwipeLeft,
@@ -24,21 +25,50 @@ export function SwipeCard({
   const [isDragging, setIsDragging] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const startPos = useRef({ x: 0, y: 0 });
+  const isPending = useRef(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const resetState = useCallback(() => {
+    setIsDragging(false);
+    setOffset({ x: 0, y: 0 });
+    isPending.current = false;
+  }, []);
 
   const handlePointerDown = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       if (isExiting) return;
-      setIsDragging(true);
       startPos.current = { x: e.clientX, y: e.clientY };
-      cardRef.current?.setPointerCapture(e.pointerId);
+      isPending.current = true;
     },
     [isExiting],
   );
 
   const handlePointerMove = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
-      if (!isDragging || isExiting) return;
+      if (isExiting) return;
+
+      if (isPending.current && !isDragging) {
+        const deltaX = Math.abs(e.clientX - startPos.current.x);
+        const deltaY = Math.abs(e.clientY - startPos.current.y);
+
+        if (
+          deltaX < DIRECTION_LOCK_THRESHOLD &&
+          deltaY < DIRECTION_LOCK_THRESHOLD
+        )
+          return;
+
+        if (deltaX > deltaY) {
+          isPending.current = false;
+          setIsDragging(true);
+          cardRef.current?.setPointerCapture(e.pointerId);
+        } else {
+          isPending.current = false;
+          return;
+        }
+      }
+
+      if (!isDragging && !isPending.current) return;
+
       setOffset({
         x: e.clientX - startPos.current.x,
         y: (e.clientY - startPos.current.y) * 0.3,
@@ -48,6 +78,10 @@ export function SwipeCard({
   );
 
   const handlePointerUp = useCallback(() => {
+    if (isPending.current) {
+      isPending.current = false;
+      return;
+    }
     if (!isDragging || isExiting) return;
     setIsDragging(false);
 
@@ -66,6 +100,10 @@ export function SwipeCard({
     }
   }, [isDragging, isExiting, offset, onSwipeLeft, onSwipeRight]);
 
+  const handlePointerCancel = useCallback(() => {
+    resetState();
+  }, [resetState]);
+
   const rotation = offset.x * ROTATION_FACTOR;
   const indicatorOpacity = Math.min(Math.abs(offset.x) / SWIPE_THRESHOLD, 1);
 
@@ -73,11 +111,11 @@ export function SwipeCard({
     <div className="relative">
       <div
         ref={cardRef}
-        className="touch-none select-none"
+        className="touch-pan-y select-none"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         style={{
           transform: `translateX(${offset.x}px) translateY(${offset.y}px) rotate(${rotation}deg)`,
           transition: isDragging
