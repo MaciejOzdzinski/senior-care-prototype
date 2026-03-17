@@ -9,7 +9,12 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
-import { caregivers, familyNeeds, mapCenter } from "@/data/mock-data";
+import {
+  caregivers,
+  familyNeeds,
+  mapCenter,
+  allSpecializations,
+} from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
 import { ProfileCard } from "@/components/features/profile-card";
@@ -18,6 +23,7 @@ import { SwipeCard } from "@/components/features/swipe-card";
 import { SwipeHint } from "@/components/features/swipe-hint";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FilterChip } from "@/components/ui/filter-chip";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassDialog } from "@/components/ui/dialog";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -36,13 +42,37 @@ export default function App() {
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("cards");
   const [activeIndex, setActiveIndex] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 
-  const activeCaregiver = caregivers[activeIndex] ?? caregivers[0];
+  const toggleFilter = (id: string) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const filteredCaregivers = useMemo(
+    () =>
+      activeFilters.size === 0
+        ? caregivers
+        : caregivers.filter((c) =>
+            c.specializations.some((s) => activeFilters.has(s.id)),
+          ),
+    [activeFilters],
+  );
+
+  const activeCaregiver =
+    filteredCaregivers[activeIndex % filteredCaregivers.length] ??
+    caregivers[0];
 
   const deckPreview = useMemo(
     () =>
-      caregivers.filter((item) => item.id !== activeCaregiver.id).slice(0, 2),
-    [activeCaregiver.id],
+      filteredCaregivers
+        .filter((item) => item.id !== activeCaregiver.id)
+        .slice(0, 2),
+    [activeCaregiver.id, filteredCaregivers],
   );
 
   const isFamilyMode = role === "family";
@@ -87,7 +117,7 @@ export default function App() {
           </div>
         </div>
       ) : (
-        <div className="mx-auto max-w-md space-y-4 px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
+        <div className="mx-auto max-w-md space-y-4 overflow-hidden px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
           {/* Apple HIG inline navigation bar */}
           <header className="flex items-center gap-3 px-1">
             <motion.button
@@ -109,9 +139,9 @@ export default function App() {
             </div>
           </header>
 
-          <main className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-start">
-            <section className="space-y-4">
-              <GlassCard className="overflow-hidden p-4">
+          <main className="grid min-w-0 gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-start">
+            <section className="min-w-0 space-y-4">
+              <GlassCard className="p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
                     <SectionTitle>
@@ -128,22 +158,28 @@ export default function App() {
                 <FakeMap
                   role={role}
                   activeCaregiverId={activeCaregiver.id}
+                  filteredCaregivers={filteredCaregivers}
                   onSelectCaregiver={(id) => {
-                    const index = caregivers.findIndex(
+                    const index = filteredCaregivers.findIndex(
                       (profile) => profile.id === id,
                     );
                     if (index >= 0) setActiveIndex(index);
                   }}
                 />
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Badge>Dziś</Badge>
-                  <Badge>Godzinowa</Badge>
-                  <Badge>Demencja</Badge>
-                </div>
               </GlassCard>
+              <div className="flex gap-2 overflow-x-auto scrollbar-none">
+                {allSpecializations.map((tag) => (
+                  <FilterChip
+                    key={tag.id}
+                    label={tag.label}
+                    active={activeFilters.has(tag.id)}
+                    onClick={() => toggleFilter(tag.id)}
+                  />
+                ))}
+              </div>
             </section>
 
-            <section className="space-y-4">
+            <section className="min-w-0 space-y-4">
               <GlassCard className="p-4">
                 <div className="flex items-center justify-between gap-4">
                   <SectionTitle>
@@ -168,12 +204,12 @@ export default function App() {
                   <SwipeCard
                     onSwipeLeft={() =>
                       setActiveIndex((current) =>
-                        nextIndex(current, caregivers.length),
+                        nextIndex(current, filteredCaregivers.length),
                       )
                     }
                     onSwipeRight={() =>
                       setActiveIndex((current) =>
-                        nextIndex(current, caregivers.length),
+                        nextIndex(current, filteredCaregivers.length),
                       )
                     }
                   >
@@ -181,12 +217,12 @@ export default function App() {
                       caregiver={activeCaregiver}
                       onSkip={() =>
                         setActiveIndex((current) =>
-                          nextIndex(current, caregivers.length),
+                          nextIndex(current, filteredCaregivers.length),
                         )
                       }
                       onSave={() =>
                         setActiveIndex((current) =>
-                          nextIndex(current, caregivers.length),
+                          nextIndex(current, filteredCaregivers.length),
                         )
                       }
                       onContact={() => setDialogOpen(true)}
@@ -196,7 +232,7 @@ export default function App() {
               ) : (
                 <GlassCard className="space-y-4 p-4 md:p-5">
                   <div className="grid gap-3 md:grid-cols-2">
-                    {caregivers.map((caregiver) => (
+                    {filteredCaregivers.map((caregiver) => (
                       <motion.button
                         key={caregiver.id}
                         type="button"
@@ -208,7 +244,7 @@ export default function App() {
                         }}
                         onClick={() =>
                           setActiveIndex(
-                            caregivers.findIndex(
+                            filteredCaregivers.findIndex(
                               (profile) => profile.id === caregiver.id,
                             ),
                           )

@@ -1,16 +1,18 @@
 import { caregivers, familyNeeds, mapCenter } from "@/data/mock-data";
-import type { RoleMode } from "@/types/domain";
+import type { CaregiverProfile, RoleMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
 interface FakeMapProps {
   role: RoleMode;
   activeCaregiverId: string;
+  filteredCaregivers: CaregiverProfile[];
   onSelectCaregiver: (id: string) => void;
 }
 
 export function FakeMap({
   role,
   activeCaregiverId,
+  filteredCaregivers,
   onSelectCaregiver,
 }: FakeMapProps) {
   return (
@@ -55,7 +57,10 @@ export function FakeMap({
       </div>
 
       {/* Caregiver pins */}
-      {caregivers.map((caregiver, index) => {
+      {filteredCaregivers.map((caregiver) => {
+        const originalIndex = caregivers.findIndex(
+          (c) => c.id === caregiver.id,
+        );
         const positions = [
           "left-[28%] top-[28%]",
           "left-[64%] top-[22%]",
@@ -70,7 +75,7 @@ export function FakeMap({
             onClick={() => onSelectCaregiver(caregiver.id)}
             className={cn(
               "absolute z-10 grid size-10 place-items-center rounded-full border-2 border-white bg-[#007AFF] text-white shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-all duration-200",
-              positions[index],
+              positions[originalIndex],
               isActive
                 ? "scale-115 shadow-[0_4px_16px_rgba(0,122,255,0.45)] ring-3 ring-[#007AFF]/25"
                 : "hover:scale-105",

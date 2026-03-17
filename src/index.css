@@ -41,6 +41,15 @@ textarea {
   color: #1c1c1e;
 }
 
+/* Hide scrollbar but keep scroll */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Swipe onboarding hint */
 @keyframes swipe-hint {
   0%,
