@@ -1,9 +1,10 @@
 import * as React from "react";
+import { motion } from "motion/react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 outline-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors duration-200 outline-none disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -27,6 +28,8 @@ const buttonVariants = cva(
   },
 );
 
+const tapSpring = { type: "spring" as const, stiffness: 300, damping: 20 };
+
 export interface ButtonProps
   extends
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -35,10 +38,12 @@ export interface ButtonProps
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button({ className, size, variant, ...props }, ref) {
     return (
-      <button
+      <motion.button
         ref={ref}
+        whileTap={{ scale: 0.97, opacity: 0.7 }}
+        transition={tapSpring}
         className={cn(buttonVariants({ variant, size }), className)}
-        {...props}
+        {...(props as React.ComponentProps<typeof motion.button>)}
       />
     );
   },

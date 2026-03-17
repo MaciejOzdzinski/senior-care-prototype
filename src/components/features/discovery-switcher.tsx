@@ -1,4 +1,5 @@
 import { Tabs } from "@base-ui/react/tabs";
+import { motion } from "motion/react";
 import type { DiscoveryMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
@@ -33,11 +34,12 @@ function SwitcherTab({ value, label, activeValue }: SwitcherTabProps) {
   return (
     <Tabs.Tab
       value={value}
+      render={<motion.button whileTap={{ scale: 0.97, opacity: 0.7 }} />}
       className={cn(
-        "inline-flex h-[32px] items-center justify-center rounded-[7px] px-4 text-[13px] font-semibold outline-none transition-all duration-200",
+        "inline-flex h-[32px] items-center justify-center rounded-[7px] px-4 text-[13px] font-semibold outline-none transition-colors duration-200",
         active
           ? "bg-white text-[#1c1c1e] shadow-[0_1px_4px_rgba(0,0,0,0.12),0_0.5px_1px_rgba(0,0,0,0.06)]"
-          : "text-[#8e8e93] active:bg-white/40",
+          : "text-[#8e8e93]",
       )}
     >
       {label}

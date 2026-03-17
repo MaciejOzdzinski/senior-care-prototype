@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion } from "motion/react";
 import {
   ArrowLeft,
   Bell,
@@ -89,14 +90,16 @@ export default function App() {
         <div className="mx-auto max-w-md space-y-4 px-4 pb-20 pt-5 md:max-w-6xl md:px-6">
           {/* Apple HIG inline navigation bar */}
           <header className="flex items-center gap-3 px-1">
-            <button
+            <motion.button
               type="button"
               onClick={() => setScreen("role")}
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-white/80 text-[#007AFF] shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-200 active:scale-95 active:bg-white/60"
+              whileTap={{ scale: 0.97, opacity: 0.7 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-white/80 text-[#007AFF] shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm"
               aria-label="Wróć do wyboru trybu"
             >
               <ArrowLeft className="size-5" />
-            </button>
+            </motion.button>
             <h1 className="min-w-0 flex-1 truncate text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
               {mapCenter.district}
             </h1>
@@ -194,9 +197,15 @@ export default function App() {
                 <GlassCard className="space-y-4 p-4 md:p-5">
                   <div className="grid gap-3 md:grid-cols-2">
                     {caregivers.map((caregiver) => (
-                      <button
+                      <motion.button
                         key={caregiver.id}
                         type="button"
+                        whileTap={{ scale: 0.97, opacity: 0.7 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                        }}
                         onClick={() =>
                           setActiveIndex(
                             caregivers.findIndex(
@@ -206,7 +215,7 @@ export default function App() {
                         }
                         className="text-left"
                       >
-                        <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4 transition hover:bg-[#eaeaef]">
+                        <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4">
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
@@ -229,7 +238,7 @@ export default function App() {
                               ))}
                           </div>
                         </div>
-                      </button>
+                      </motion.button>
                     ))}
                   </div>
                 </GlassCard>
@@ -348,13 +357,15 @@ interface IconBubbleProps {
 
 function IconBubble({ icon: Icon, label }: IconBubbleProps) {
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={label}
-      className="grid size-10 place-items-center rounded-full bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-all duration-200 active:scale-95 active:bg-white/60"
+      whileTap={{ scale: 0.97, opacity: 0.7 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="grid size-10 place-items-center rounded-full bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm"
     >
       <Icon className="size-5 text-[#1c1c1e]" />
-    </button>
+    </motion.button>
   );
 }
 
@@ -372,9 +383,10 @@ function BottomNavItem({
   badgeCount,
 }: BottomNavItemProps) {
   return (
-    <button
+    <motion.button
       type="button"
-      className={`relative inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] transition-all duration-200 active:scale-90 active:opacity-70 ${
+      whileTap={{ scale: 0.97, opacity: 0.7 }}
+      className={`relative inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] ${
         active ? "text-[#007AFF]" : "text-[#8e8e93]"
       }`}
     >
@@ -387,6 +399,6 @@ function BottomNavItem({
         ) : null}
       </div>
       <span className="font-medium">{label}</span>
-    </button>
+    </motion.button>
   );
 }

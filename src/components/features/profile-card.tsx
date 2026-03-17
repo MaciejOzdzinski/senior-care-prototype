@@ -1,4 +1,5 @@
 import { ArrowRight, Bookmark, Heart, Info, Star, X } from "lucide-react";
+import { motion } from "motion/react";
 import type { CaregiverProfile } from "@/types/domain";
 import { formatCompatibility } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -101,10 +102,13 @@ export function ProfileCard({
           </Button>
         </div>
 
-        <button className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#007AFF] transition hover:text-[#0071E3]">
+        <motion.button
+          whileTap={{ scale: 0.97, opacity: 0.7 }}
+          className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#007AFF]"
+        >
           Zobacz pełny profil
           <ArrowRight className="size-4" />
-        </button>
+        </motion.button>
       </div>
     </GlassCard>
   );
