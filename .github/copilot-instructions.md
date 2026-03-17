@@ -18,6 +18,17 @@ CareMatch is a mobile-first prototype connecting families of seniors with caregi
 
 ## Architecture
 
+### Features First
+
+Every new piece of functionality starts in `src/components/features/`. A feature component owns its own layout, domain logic, and UI composition — it receives data + callbacks as props but never fetches data itself. Only when a pattern repeats across multiple features should it be extracted into a reusable primitive in `src/components/ui/`. This keeps the codebase flat, discoverable, and avoids premature abstraction.
+
+**Rules:**
+
+1. New feature → create a file in `components/features/` (kebab-case, named export).
+2. Don't create a `ui/` primitive until the same visual pattern appears in ≥ 2 features.
+3. Keep feature components self-contained — one file per feature, no sub-folders unless complexity demands it.
+4. `App.tsx` orchestrates screens, state, and wiring between features — features stay decoupled from each other.
+
 - Single entry: `src/main.tsx` → `App.tsx` (all routing is state-based, no router)
 - Two screens: **role selection** and **discovery** (toggled via `screen` state)
 - Two user modes: `family` (seeking caregiver) and `caregiver` (seeking jobs)
