@@ -5,6 +5,7 @@ import {
   Clock,
   Heart,
   MapPin,
+  Quote,
   Shield,
   Star,
 } from "lucide-react";
@@ -27,12 +28,7 @@ export function ProfileDrawer({
   onSave,
 }: ProfileDrawerProps) {
   return (
-    <Drawer.Root
-      open={open}
-      onOpenChange={onOpenChange}
-      snapPoints={[0.6, 1]}
-      fadeFromIndex={0}
-    >
+    <Drawer.Root open={open} onOpenChange={onOpenChange}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30" />
         <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[96dvh] flex-col rounded-t-[20px] bg-white outline-none">
@@ -143,6 +139,63 @@ export function ProfileDrawer({
                   </li>
                 ))}
               </ul>
+            </section>
+
+            {/* Reviews */}
+            <section className="mt-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h4 className="text-[13px] font-semibold uppercase tracking-wider text-[#8e8e93]">
+                  Opinie
+                </h4>
+                <div className="flex items-center gap-1.5">
+                  <Star className="size-3.5 fill-[#FF9500] text-[#FF9500]" />
+                  <span className="text-[15px] font-bold text-[#1c1c1e]">
+                    {caregiver.rating}
+                  </span>
+                  <span className="text-[13px] text-[#8e8e93]">
+                    ({caregiver.reviews})
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {caregiver.reviewList.map((review) => (
+                  <div key={review.id} className="rounded-2xl bg-[#f2f2f7] p-4">
+                    <div className="mb-2.5 flex items-center gap-3">
+                      <img
+                        src={review.avatarUrl}
+                        alt={review.author}
+                        className="size-9 shrink-0 rounded-full object-cover"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[15px] font-semibold text-[#1c1c1e]">
+                          {review.author}
+                        </div>
+                        <div className="text-[12px] text-[#8e8e93]">
+                          {review.date}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 gap-0.5">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <Star
+                            key={i}
+                            className={`size-3 ${
+                              i < review.rating
+                                ? "fill-[#FF9500] text-[#FF9500]"
+                                : "fill-[#e5e5ea] text-[#e5e5ea]"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="relative pl-3">
+                      <Quote className="absolute -left-0.5 top-0 size-3 text-[#c7c7cc]" />
+                      <p className="text-[14px] leading-[20px] text-[#3c3c43]">
+                        {review.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* CTA buttons */}

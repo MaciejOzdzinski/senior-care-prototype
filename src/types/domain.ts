@@ -1,9 +1,18 @@
-export type RoleMode = 'family' | 'caregiver';
-export type DiscoveryMode = 'cards' | 'map';
+export type RoleMode = "family" | "caregiver";
+export type DiscoveryMode = "cards" | "map";
 
 export interface CapabilityTag {
   id: string;
   label: string;
+}
+
+export interface Review {
+  id: string;
+  author: string;
+  avatarUrl: string;
+  rating: number;
+  date: string;
+  text: string;
 }
 
 export interface CaregiverProfile {
@@ -24,6 +33,7 @@ export interface CaregiverProfile {
   lat: number;
   lng: number;
   verified: boolean;
+  reviewList: Review[];
 }
 
 export interface CareNeed {
