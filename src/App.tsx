@@ -1,11 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
   Bell,
   Filter,
+  Heart,
   House,
   MessageCircleMore,
+  RotateCcw,
   UserRound,
   Users,
 } from "lucide-react";
@@ -27,18 +29,14 @@ import type { DiscoveryMode, RoleMode } from "@/types/domain";
 
 const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
 
-function nextIndex(current: number, length: number): number {
-  if (length === 0) return 0;
-  return (current + 1) % length;
-}
-
 export default function App() {
   const [role, setRole] = useState<RoleMode>("family");
   const [screen, setScreen] = useState<"role" | "discovery">("role");
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("cards");
-  const [activeIndex, setActiveIndex] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [matchAnimation, setMatchAnimation] = useState(false);
+  const [lastSwipedName, setLastSwipedName] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 
   const toggleFilter = (id: string) => {
@@ -60,19 +58,35 @@ export default function App() {
     [activeFilters],
   );
 
-  const activeCaregiver =
-    filteredCaregivers[activeIndex % filteredCaregivers.length] ??
-    caregivers[0];
+  const [deck, setDeck] = useState(filteredCaregivers);
 
-  const deckPreview = useMemo(
-    () =>
-      filteredCaregivers
-        .filter((item) => item.id !== activeCaregiver.id)
-        .slice(0, 2),
-    [activeCaregiver.id, filteredCaregivers],
-  );
+  // Reset deck when filters change
+  useEffect(() => {
+    setDeck(filteredCaregivers);
+  }, [filteredCaregivers]);
+
+  const topCard = deck[deck.length - 1] ?? null;
+  const activeCaregiver = topCard ?? caregivers[0];
 
   const isFamilyMode = role === "family";
+
+  const handleSwipe = (direction: "left" | "right") => {
+    const swiped = deck[deck.length - 1];
+    if (!swiped) return;
+
+    if (direction === "right") {
+      setLastSwipedName(swiped.name);
+      setMatchAnimation(true);
+      setTimeout(() => setMatchAnimation(false), 1800);
+    }
+
+    setDeck((prev) => prev.slice(0, -1));
+  };
+
+  const resetDeck = () => {
+    setDeck(filteredCaregivers);
+    setLastSwipedName(null);
+  };
 
   return (
     <div className="relative min-h-screen text-[#1c1c1e]">
@@ -160,10 +174,14 @@ export default function App() {
                     activeCaregiverId={activeCaregiver.id}
                     filteredCaregivers={filteredCaregivers}
                     onSelectCaregiver={(id) => {
-                      const index = filteredCaregivers.findIndex(
-                        (profile) => profile.id === id,
-                      );
-                      if (index >= 0) setActiveIndex(index);
+                      setDeck((prev) => {
+                        const idx = prev.findIndex((p) => p.id === id);
+                        if (idx < 0 || idx === prev.length - 1) return prev;
+                        const next = [...prev];
+                        const [item] = next.splice(idx, 1);
+                        next.push(item);
+                        return next;
+                      });
                     }}
                   />
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-linear-to-t from-black/25 to-transparent pt-8 pb-2.5 px-3">
@@ -196,46 +214,80 @@ export default function App() {
               </GlassCard>
 
               {discoveryMode === "cards" ? (
-                <div className="relative">
-                  <SwipeHint />
-                  {deckPreview.map((item, index) => (
-                    <GlassCard
-                      key={item.id}
-                      className={`absolute -z-10 h-[360px] transition-all duration-300 ${
-                        index === 0
-                          ? "inset-x-0 translate-x-[-4px] translate-y-2 rotate-[2deg] scale-[0.97] opacity-50"
-                          : "inset-x-0 translate-x-[-8px] translate-y-4 rotate-[4deg] scale-[0.94] opacity-30"
-                      }`}
-                    />
-                  ))}
-                  <SwipeCard
-                    onSwipeLeft={() =>
-                      setActiveIndex((current) =>
-                        nextIndex(current, filteredCaregivers.length),
-                      )
-                    }
-                    onSwipeRight={() =>
-                      setActiveIndex((current) =>
-                        nextIndex(current, filteredCaregivers.length),
-                      )
-                    }
-                  >
-                    <ProfileCard
-                      caregiver={activeCaregiver}
-                      onTapCard={() => setDrawerOpen(true)}
-                      onSkip={() =>
-                        setActiveIndex((current) =>
-                          nextIndex(current, filteredCaregivers.length),
-                        )
-                      }
-                      onSave={() =>
-                        setActiveIndex((current) =>
-                          nextIndex(current, filteredCaregivers.length),
-                        )
-                      }
-                      onContact={() => setDialogOpen(true)}
-                    />
-                  </SwipeCard>
+                <div className="relative h-[540px]">
+                  {deck.length > 0 && <SwipeHint />}
+
+                  {/* Match animation overlay */}
+                  {matchAnimation && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xl">
+                      <div className="flex flex-col items-center gap-5">
+                        <div className="flex size-20 items-center justify-center rounded-full bg-[#34C759] shadow-[0_4px_24px_rgba(52,199,89,0.5)]">
+                          <Heart
+                            className="size-10 text-white"
+                            fill="currentColor"
+                          />
+                        </div>
+                        <div className="text-center">
+                          <h2 className="text-[28px] font-bold tracking-tight text-white">
+                            Wysłano zapytanie
+                          </h2>
+                          <p className="mt-1 text-[17px] text-white/70">
+                            {lastSwipedName} otrzyma powiadomienie
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {deck.length > 0 ? (
+                    deck.slice(-3).map((profile, sliceIndex, arr) => {
+                      const isTop = sliceIndex === arr.length - 1;
+                      const depth = arr.length - 1 - sliceIndex;
+                      const scale = 1 - depth * 0.03;
+                      const translateY = depth * 8;
+
+                      return (
+                        <SwipeCard
+                          key={profile.id}
+                          onSwipe={handleSwipe}
+                          isTop={isTop}
+                          onTap={isTop ? () => setDrawerOpen(true) : undefined}
+                          style={
+                            isTop
+                              ? { zIndex: arr.length }
+                              : {
+                                  transform: `scale(${scale}) translateY(${translateY}px)`,
+                                  zIndex: sliceIndex,
+                                }
+                          }
+                        >
+                          <ProfileCard caregiver={profile} />
+                        </SwipeCard>
+                      );
+                    })
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-black/4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+                      <div className="p-8 text-center">
+                        <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-[#34C759]/10">
+                          <Heart className="size-10 text-[#34C759]" />
+                        </div>
+                        <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
+                          Brak więcej opiekunek
+                        </h3>
+                        <p className="mb-6 text-[15px] text-[#8e8e93]">
+                          Sprawdź ponownie później
+                        </p>
+                        <button
+                          type="button"
+                          onClick={resetDeck}
+                          className="inline-flex items-center gap-2 rounded-full bg-[#34C759] px-6 py-3 text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,199,89,0.4)] transition-transform active:scale-95"
+                        >
+                          <RotateCcw className="size-4" />
+                          Zacznij od nowa
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <GlassCard className="space-y-4 p-4 md:p-5">
@@ -251,11 +303,16 @@ export default function App() {
                           damping: 20,
                         }}
                         onClick={() =>
-                          setActiveIndex(
-                            filteredCaregivers.findIndex(
-                              (profile) => profile.id === caregiver.id,
-                            ),
-                          )
+                          setDeck((prev) => {
+                            const idx = prev.findIndex(
+                              (p) => p.id === caregiver.id,
+                            );
+                            if (idx < 0 || idx === prev.length - 1) return prev;
+                            const next = [...prev];
+                            const [item] = next.splice(idx, 1);
+                            next.push(item);
+                            return next;
+                          })
                         }
                         className="text-left"
                       >

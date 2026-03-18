@@ -1,154 +1,186 @@
-import {
-  useRef,
-  useState,
-  useCallback,
-  type ReactNode,
-  type PointerEvent,
-} from "react";
+import { type ReactNode, useRef, useState } from "react";
+import { Check, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SwipeCardProps {
-  onSwipeLeft: () => void;
-  onSwipeRight: () => void;
+  onSwipe: (direction: "left" | "right") => void;
+  isTop: boolean;
+  style?: React.CSSProperties;
+  onTap?: () => void;
   children: ReactNode;
 }
 
-const SWIPE_THRESHOLD = 80;
-const ROTATION_FACTOR = 0.12;
-const DIRECTION_LOCK_THRESHOLD = 10;
-
 export function SwipeCard({
-  onSwipeLeft,
-  onSwipeRight,
+  onSwipe,
+  isTop,
+  style,
+  onTap,
   children,
 }: SwipeCardProps) {
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [dragState, setDragState] = useState({ x: 0, rotation: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-  const startPos = useRef({ x: 0, y: 0 });
-  const isPending = useRef(false);
+  const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(
+    null,
+  );
   const cardRef = useRef<HTMLDivElement>(null);
+  const startPos = useRef({ x: 0 });
+  const hasMoved = useRef(false);
 
-  const resetState = useCallback(() => {
-    setIsDragging(false);
-    setOffset({ x: 0, y: 0 });
-    isPending.current = false;
-  }, []);
+  const handleStart = (clientX: number) => {
+    if (!isTop) return;
+    setIsDragging(true);
+    hasMoved.current = false;
+    startPos.current = { x: clientX };
+  };
 
-  const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (isExiting) return;
-      startPos.current = { x: e.clientX, y: e.clientY };
-      isPending.current = true;
-    },
-    [isExiting],
-  );
+  const handleMove = (clientX: number) => {
+    if (!isDragging || !isTop) return;
 
-  const handlePointerMove = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (isExiting) return;
+    const deltaX = clientX - startPos.current.x;
+    if (Math.abs(deltaX) > 4) hasMoved.current = true;
+    const rotation = deltaX * 0.04;
 
-      if (isPending.current && !isDragging) {
-        const deltaX = Math.abs(e.clientX - startPos.current.x);
-        const deltaY = Math.abs(e.clientY - startPos.current.y);
+    setDragState({ x: deltaX, rotation });
 
-        if (
-          deltaX < DIRECTION_LOCK_THRESHOLD &&
-          deltaY < DIRECTION_LOCK_THRESHOLD
-        )
-          return;
+    if (deltaX > 50) setSwipeDirection("right");
+    else if (deltaX < -50) setSwipeDirection("left");
+    else setSwipeDirection(null);
+  };
 
-        if (deltaX > deltaY) {
-          isPending.current = false;
-          setIsDragging(true);
-          cardRef.current?.setPointerCapture(e.pointerId);
-        } else {
-          isPending.current = false;
-          return;
-        }
-      }
-
-      if (!isDragging && !isPending.current) return;
-
-      setOffset({
-        x: e.clientX - startPos.current.x,
-        y: (e.clientY - startPos.current.y) * 0.3,
-      });
-    },
-    [isDragging, isExiting],
-  );
-
-  const handlePointerUp = useCallback(() => {
-    if (isPending.current) {
-      isPending.current = false;
-      return;
-    }
-    if (!isDragging || isExiting) return;
+  const handleEnd = () => {
+    if (!isDragging) return;
     setIsDragging(false);
 
-    if (Math.abs(offset.x) > SWIPE_THRESHOLD) {
-      const direction = offset.x > 0 ? 1 : -1;
-      setIsExiting(true);
-      setOffset((prev) => ({ x: direction * 500, y: prev.y }));
-      setTimeout(() => {
-        setIsExiting(false);
-        setOffset({ x: 0, y: 0 });
-        if (direction > 0) onSwipeRight();
-        else onSwipeLeft();
-      }, 280);
+    const threshold = 100;
+
+    if (dragState.x > threshold) {
+      animateOut("right");
+    } else if (dragState.x < -threshold) {
+      animateOut("left");
     } else {
-      setOffset({ x: 0, y: 0 });
+      if (!hasMoved.current && onTap) onTap();
+      setDragState({ x: 0, rotation: 0 });
+      setSwipeDirection(null);
     }
-  }, [isDragging, isExiting, offset, onSwipeLeft, onSwipeRight]);
+  };
 
-  const handlePointerCancel = useCallback(() => {
-    resetState();
-  }, [resetState]);
+  const animateOut = (direction: "left" | "right") => {
+    const x = direction === "right" ? 400 : -400;
+    const rotation = direction === "right" ? 12 : -12;
 
-  const rotation = offset.x * ROTATION_FACTOR;
-  const indicatorOpacity = Math.min(Math.abs(offset.x) / SWIPE_THRESHOLD, 1);
+    setDragState({ x, rotation });
+    setTimeout(() => {
+      onSwipe(direction);
+      setDragState({ x: 0, rotation: 0 });
+      setSwipeDirection(null);
+    }, 300);
+  };
+
+  const handleButtonSwipe = (direction: "left" | "right") => {
+    if (!isTop) return;
+    setSwipeDirection(direction);
+    animateOut(direction);
+  };
 
   return (
-    <div className="relative">
+    <div
+      ref={cardRef}
+      className={cn(
+        "absolute inset-0 rounded-2xl overflow-hidden",
+        "border border-black/4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]",
+        isDragging && "cursor-grabbing",
+        !isTop && "pointer-events-none",
+        isTop && "cursor-grab",
+      )}
+      style={{
+        ...style,
+        transform: isTop
+          ? `translateX(${dragState.x}px) rotate(${dragState.rotation}deg)`
+          : style?.transform,
+        transition: isDragging
+          ? "none"
+          : "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      }}
+      onMouseDown={(e) => handleStart(e.clientX)}
+      onMouseMove={(e) => handleMove(e.clientX)}
+      onMouseUp={handleEnd}
+      onMouseLeave={() => isDragging && handleEnd()}
+      onTouchStart={(e) => handleStart(e.touches[0].clientX)}
+      onTouchMove={(e) => handleMove(e.touches[0].clientX)}
+      onTouchEnd={handleEnd}
+    >
+      {/* Swipe right indicator — iOS pill */}
       <div
-        ref={cardRef}
-        className="touch-pan-y select-none"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-        style={{
-          transform: `translateX(${offset.x}px) translateY(${offset.y}px) rotate(${rotation}deg)`,
-          transition: isDragging
-            ? "none"
-            : "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
-          cursor: isDragging ? "grabbing" : "grab",
-        }}
+        className={cn(
+          "absolute top-5 right-5 z-10 rounded-full px-4 py-2 transition-all duration-200",
+          "bg-[#34C759] shadow-[0_2px_12px_rgba(52,199,89,0.4)]",
+          swipeDirection === "right"
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-90",
+        )}
       >
-        {/* Swipe right indicator — KONTAKT */}
-        <div
-          className="pointer-events-none absolute left-5 top-5 z-20 rounded-xl border-[3px] border-[#34C759] px-4 py-2 text-lg font-bold text-[#34C759]"
-          style={{
-            opacity: offset.x > 10 ? indicatorOpacity : 0,
-            transform: "rotate(-12deg)",
-            transition: isDragging ? "none" : "opacity 0.2s",
-          }}
-        >
-          KONTAKT ♥
-        </div>
+        <span className="text-[15px] font-semibold tracking-tight text-white">
+          Zainteresowany
+        </span>
+      </div>
 
-        {/* Swipe left indicator — POMIŃ */}
-        <div
-          className="pointer-events-none absolute right-5 top-5 z-20 rounded-xl border-[3px] border-[#FF3B30] px-4 py-2 text-lg font-bold text-[#FF3B30]"
-          style={{
-            opacity: offset.x < -10 ? indicatorOpacity : 0,
-            transform: "rotate(12deg)",
-            transition: isDragging ? "none" : "opacity 0.2s",
-          }}
-        >
-          POMIŃ ✕
-        </div>
+      {/* Swipe left indicator — iOS pill */}
+      <div
+        className={cn(
+          "absolute top-5 left-5 z-10 rounded-full px-4 py-2 transition-all duration-200",
+          "bg-[#FF3B30] shadow-[0_2px_12px_rgba(255,59,48,0.4)]",
+          swipeDirection === "left"
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-90",
+        )}
+      >
+        <span className="text-[15px] font-semibold tracking-tight text-white">
+          Pomijam
+        </span>
+      </div>
 
+      {/* Card content */}
+      <div className="flex h-full flex-col p-5">
         {children}
+
+        {/* Action buttons — round, iOS 44pt touch targets */}
+        {isTop && (
+          <div className="flex justify-center gap-5 pt-3">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleButtonSwipe("left");
+              }}
+              className={cn(
+                "flex size-[60px] items-center justify-center rounded-full",
+                "bg-[#FF3B30]/10 active:bg-[#FF3B30]/20",
+                "transition-transform duration-200 active:scale-95",
+                "shadow-[0_2px_8px_rgba(255,59,48,0.15)]",
+              )}
+              aria-label="Pomiń"
+            >
+              <X className="size-7 text-[#FF3B30]" strokeWidth={2.5} />
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleButtonSwipe("right");
+              }}
+              className={cn(
+                "flex size-[60px] items-center justify-center rounded-full",
+                "bg-[#34C759]/10 active:bg-[#34C759]/20",
+                "transition-transform duration-200 active:scale-95",
+                "shadow-[0_2px_8px_rgba(52,199,89,0.15)]",
+              )}
+              aria-label="Zainteresowany"
+            >
+              <Check className="size-7 text-[#34C759]" strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
