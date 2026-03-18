@@ -7,6 +7,7 @@ interface SwipeCardProps {
   isTop: boolean;
   style?: React.CSSProperties;
   onTap?: () => void;
+  onContact?: () => void;
   children: ReactNode;
 }
 
@@ -15,6 +16,7 @@ export function SwipeCard({
   isTop,
   style,
   onTap,
+  onContact,
   children,
 }: SwipeCardProps) {
   const [dragState, setDragState] = useState({ x: 0, rotation: 0 });
@@ -145,7 +147,11 @@ export function SwipeCard({
 
         {/* Action buttons — round, iOS style */}
         {isTop && (
-          <div className="flex items-center justify-center gap-5 pt-2">
+          <div
+            className="flex items-center justify-center gap-5 pt-2"
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               onClick={(e) => {
@@ -162,7 +168,7 @@ export function SwipeCard({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                handleButtonSwipe("right");
+                onContact?.();
               }}
               className="flex size-14 items-center justify-center rounded-full bg-[#007AFF] shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-90"
               aria-label="Kontakt"

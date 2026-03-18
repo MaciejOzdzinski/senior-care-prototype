@@ -252,6 +252,9 @@ export default function App() {
                           onSwipe={handleSwipe}
                           isTop={isTop}
                           onTap={isTop ? () => setDrawerOpen(true) : undefined}
+                          onContact={
+                            isTop ? () => setDrawerOpen(true) : undefined
+                          }
                           style={
                             isTop
                               ? { zIndex: arr.length }

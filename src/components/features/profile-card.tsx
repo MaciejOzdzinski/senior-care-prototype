@@ -76,19 +76,19 @@ export function ProfileCard({ caregiver }: ProfileCardProps) {
       </div>
 
       {/* Spacer */}
-      <div className="flex-1" />
+      <div className="flex-1 min-h-2" />
 
       {/* Match percentage bar */}
-      <div className="relative">
-        <div className="h-9 w-full overflow-hidden rounded-xl bg-[#34C759]/8">
+      <div className="relative mb-2">
+        <div className="h-9 w-full overflow-hidden rounded-xl bg-[#007AFF]/8">
           <div
             className="flex h-full items-center px-3 transition-all duration-500"
             style={{
               width: `${caregiver.compatibility}%`,
-              backgroundColor: "rgba(52, 199, 89, 0.15)",
+              backgroundColor: "rgba(0, 122, 255, 0.12)",
             }}
           >
-            <p className="whitespace-nowrap text-[12px] font-medium text-[#34C759]">
+            <p className="whitespace-nowrap text-[12px] font-medium text-[#007AFF]">
               {caregiver.compatibility}% dopasowania — blisko seniora,{" "}
               {caregiver.distanceKm.toFixed(1)} km
             </p>
