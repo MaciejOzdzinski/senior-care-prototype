@@ -1,5 +1,5 @@
 import { type ReactNode, useRef, useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SwipeCardProps {
@@ -140,24 +140,19 @@ export function SwipeCard({
       </div>
 
       {/* Card content */}
-      <div className="flex h-full flex-col p-5">
+      <div className="flex h-full flex-col p-4">
         {children}
 
-        {/* Action buttons — round, iOS 44pt touch targets */}
+        {/* Action buttons — round, iOS style */}
         {isTop && (
-          <div className="flex justify-center gap-5 pt-3">
+          <div className="flex items-center justify-center gap-5 pt-2">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 handleButtonSwipe("left");
               }}
-              className={cn(
-                "flex size-[60px] items-center justify-center rounded-full",
-                "bg-[#FF3B30]/10 active:bg-[#FF3B30]/20",
-                "transition-transform duration-200 active:scale-95",
-                "shadow-[0_2px_8px_rgba(255,59,48,0.15)]",
-              )}
+              className="flex size-14 items-center justify-center rounded-full bg-[#FF3B30]/10 transition-transform active:scale-90"
               aria-label="Pomiń"
             >
               <X className="size-7 text-[#FF3B30]" strokeWidth={2.5} />
@@ -169,12 +164,19 @@ export function SwipeCard({
                 e.stopPropagation();
                 handleButtonSwipe("right");
               }}
-              className={cn(
-                "flex size-[60px] items-center justify-center rounded-full",
-                "bg-[#34C759]/10 active:bg-[#34C759]/20",
-                "transition-transform duration-200 active:scale-95",
-                "shadow-[0_2px_8px_rgba(52,199,89,0.15)]",
-              )}
+              className="flex size-14 items-center justify-center rounded-full bg-[#007AFF] shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-90"
+              aria-label="Kontakt"
+            >
+              <MessageCircle className="size-6 text-white" strokeWidth={2} />
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleButtonSwipe("right");
+              }}
+              className="flex size-14 items-center justify-center rounded-full bg-[#34C759]/10 transition-transform active:scale-90"
               aria-label="Zainteresowany"
             >
               <Check className="size-7 text-[#34C759]" strokeWidth={2.5} />

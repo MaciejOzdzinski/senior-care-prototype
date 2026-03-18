@@ -214,7 +214,7 @@ export default function App() {
               </GlassCard>
 
               {discoveryMode === "cards" ? (
-                <div className="relative h-[540px]">
+                <div className="relative h-[420px]">
                   {deck.length > 0 && <SwipeHint />}
 
                   {/* Match animation overlay */}
