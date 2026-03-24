@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
@@ -7,24 +7,21 @@ import {
   Heart,
   House,
   MessageCircleMore,
-  RotateCcw,
   UserRound,
   Users,
 } from "lucide-react";
 import { caregivers, mapCenter, allSpecializations } from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
-import { ProfileCard } from "@/components/features/profile-card";
+import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
+import type { SheetState } from "@/components/features/map-bottom-sheet";
 import { RoleSelector } from "@/components/features/role-selector";
-import { SwipeCard } from "@/components/features/swipe-card";
-import { SwipeHint } from "@/components/features/swipe-hint";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassDialog } from "@/components/ui/dialog";
-import { SectionTitle } from "@/components/ui/section-title";
 import type { DiscoveryMode, RoleMode } from "@/types/domain";
 
 const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
@@ -35,9 +32,10 @@ export default function App() {
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("map");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [matchAnimation, setMatchAnimation] = useState(false);
-  const [lastSwipedName, setLastSwipedName] = useState<string | null>(null);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
+  const [sheetState, setSheetState] = useState<SheetState>("half");
+  const mapContentRef = useRef<HTMLDivElement>(null);
+  const [mapContentHeight, setMapContentHeight] = useState(500);
 
   const toggleFilter = (id: string) => {
     setActiveFilters((prev) => {
@@ -68,25 +66,19 @@ export default function App() {
   const topCard = deck[deck.length - 1] ?? null;
   const activeCaregiver = topCard ?? caregivers[0];
 
-  const isFamilyMode = role === "family";
 
-  const handleSwipe = (direction: "left" | "right") => {
-    const swiped = deck[deck.length - 1];
-    if (!swiped) return;
 
-    if (direction === "right") {
-      setLastSwipedName(swiped.name);
-      setMatchAnimation(true);
-      setTimeout(() => setMatchAnimation(false), 1800);
-    }
-
-    setDeck((prev) => prev.slice(0, -1));
-  };
-
-  const resetDeck = () => {
-    setDeck(filteredCaregivers);
-    setLastSwipedName(null);
-  };
+  // Measure map content area height
+  useEffect(() => {
+    const measure = () => {
+      if (mapContentRef.current) {
+        setMapContentHeight(mapContentRef.current.clientHeight);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [screen, discoveryMode]);
 
   return (
     <div className="relative min-h-screen text-[#1c1c1e]">
@@ -127,6 +119,97 @@ export default function App() {
             />
           </div>
         </div>
+      ) : discoveryMode === "map" ? (
+        /* ─── MAP MODE: fullscreen map + bottom sheet ─── */
+        <div className="fixed inset-0 flex flex-col">
+          {/* Top bar — floating over map */}
+          <div className="relative z-20 flex items-center gap-3 bg-white/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
+            <motion.button
+              type="button"
+              onClick={() => setScreen("role")}
+              whileTap={{ scale: 0.97, opacity: 0.7 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-white/80 text-[#007AFF] shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm"
+              aria-label="Wróć do wyboru trybu"
+            >
+              <ArrowLeft className="size-5" />
+            </motion.button>
+            <h1 className="min-w-0 flex-1 truncate text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
+              {mapCenter.district}
+            </h1>
+            <div className="flex shrink-0 items-center gap-2">
+              <IconBubble icon={Bell} label="Powiadomienia" />
+              <IconBubble icon={Filter} label="Filtry" />
+            </div>
+          </div>
+
+          {/* Segmented control — floating */}
+          <div className="relative z-20 flex justify-center bg-white/70 pb-2 backdrop-blur-2xl">
+            <DiscoverySwitcher
+              value={discoveryMode}
+              onChange={setDiscoveryMode}
+            />
+          </div>
+
+          {/* Map + bottom sheet content area */}
+          <div ref={mapContentRef} className="relative min-h-0 flex-1">
+            {/* Fullscreen map background */}
+            <FakeMap
+              role={role}
+              activeCaregiverId={activeCaregiver.id}
+              filteredCaregivers={filteredCaregivers}
+              fullscreen
+              onSelectCaregiver={(id) => {
+                setDeck((prev) => {
+                  const idx = prev.findIndex((p) => p.id === id);
+                  if (idx < 0 || idx === prev.length - 1) return prev;
+                  const next = [...prev];
+                  const [item] = next.splice(idx, 1);
+                  next.push(item);
+                  return next;
+                });
+                setSheetState("half");
+              }}
+            />
+
+            {/* Filter chips — floating on map */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-4 pt-3">
+              <div className="pointer-events-auto flex gap-2 overflow-x-auto scrollbar-none">
+                {allSpecializations.map((tag) => (
+                  <FilterChip
+                    key={tag.id}
+                    label={tag.label}
+                    active={activeFilters.has(tag.id)}
+                    onClick={() => toggleFilter(tag.id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom sheet */}
+            <MapBottomSheet
+              caregiver={activeCaregiver}
+              sheetState={sheetState}
+              onSheetStateChange={setSheetState}
+              contentHeight={mapContentHeight}
+              onContact={() => setDialogOpen(true)}
+              onSave={() => {}}
+              onViewProfile={() => setDrawerOpen(true)}
+            />
+          </div>
+
+          {/* Bottom navigation */}
+          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+            <BottomNavItem icon={House} label="Główna" active />
+            <BottomNavItem icon={Users} label="Odkrywaj" />
+            <BottomNavItem
+              icon={MessageCircleMore}
+              label="Wiadomości"
+              badgeCount={3}
+            />
+            <BottomNavItem icon={UserRound} label="Profil" />
+          </nav>
+        </div>
       ) : (
         <div className="mx-auto max-w-md space-y-4 overflow-hidden px-4 pb-20 pt-[max(env(safe-area-inset-top),20px)] md:max-w-6xl md:px-6">
           {/* Apple HIG inline navigation bar */}
@@ -150,207 +233,83 @@ export default function App() {
             </div>
           </header>
 
-          <main className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-            <section className="order-2 min-w-0 space-y-4 lg:sticky lg:top-4">
-              <GlassCard className="p-3">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <SectionTitle className="text-[15px]">
-                    {isFamilyMode ? "Mapa dopasowań" : "Mapa zgłoszeń"}
-                  </SectionTitle>
-                  <Badge className="shrink-0">
-                    {isFamilyMode ? "3 km" : "2 aktywne zlecenia"}
-                  </Badge>
-                </div>
-                <div className="relative">
-                  <FakeMap
-                    role={role}
-                    activeCaregiverId={activeCaregiver.id}
-                    filteredCaregivers={filteredCaregivers}
-                    onSelectCaregiver={(id) => {
+          <div className="flex justify-center">
+            <DiscoverySwitcher
+              value={discoveryMode}
+              onChange={setDiscoveryMode}
+            />
+          </div>
+
+          {discoveryMode === "profile" ? (
+            <GlassCard className="space-y-4 p-4 md:p-5">
+              <div className="grid gap-3 md:grid-cols-2">
+                {filteredCaregivers.map((caregiver) => (
+                  <motion.button
+                    key={caregiver.id}
+                    type="button"
+                    whileTap={{ scale: 0.97, opacity: 0.7 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20,
+                    }}
+                    onClick={() =>
                       setDeck((prev) => {
-                        const idx = prev.findIndex((p) => p.id === id);
+                        const idx = prev.findIndex(
+                          (p) => p.id === caregiver.id,
+                        );
                         if (idx < 0 || idx === prev.length - 1) return prev;
                         const next = [...prev];
                         const [item] = next.splice(idx, 1);
                         next.push(item);
                         return next;
-                      });
-                    }}
-                  />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-2xl bg-linear-to-t from-black/25 to-transparent pt-8 pb-2.5 px-3">
-                    <div className="pointer-events-auto flex gap-2 overflow-x-auto scrollbar-none">
-                      {allSpecializations.map((tag) => (
-                        <FilterChip
-                          key={tag.id}
-                          label={tag.label}
-                          active={activeFilters.has(tag.id)}
-                          onClick={() => toggleFilter(tag.id)}
-                        />
-                      ))}
+                      })
+                    }
+                    className="text-left"
+                  >
+                    <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
+                            {caregiver.name}
+                          </div>
+                          <div className="text-[13px] leading-[18px] text-[#8e8e93]">
+                            {caregiver.distanceKm.toFixed(1)} km ·{" "}
+                            {caregiver.hourlyRate} zł/h
+                          </div>
+                        </div>
+                        <Badge className="bg-[#007AFF]/12 text-[#007AFF] font-semibold">
+                          {caregiver.compatibility}%
+                        </Badge>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {caregiver.specializations
+                          .slice(0, 3)
+                          .map((tag) => (
+                            <Badge key={tag.id}>{tag.label}</Badge>
+                          ))}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </GlassCard>
-            </section>
-
-            <section className="order-1 min-w-0 space-y-4">
-              <div className="flex justify-center">
-                <DiscoverySwitcher
-                  value={discoveryMode}
-                  onChange={setDiscoveryMode}
-                />
+                  </motion.button>
+                ))}
               </div>
-
-              {discoveryMode === "map" ? (
-                <div className="relative h-[340px]">
-                  {/* Match animation overlay */}
-                  {matchAnimation && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xl">
-                      <div className="flex flex-col items-center gap-5">
-                        <div className="flex size-20 items-center justify-center rounded-full bg-[#34C759] shadow-[0_4px_24px_rgba(52,199,89,0.5)]">
-                          <Heart
-                            className="size-10 text-white"
-                            fill="currentColor"
-                          />
-                        </div>
-                        <div className="text-center">
-                          <h2 className="text-[28px] font-bold tracking-tight text-white">
-                            Profil zapisany
-                          </h2>
-                          <p className="mt-1 text-[17px] text-white/70">
-                            {lastSwipedName} — znajdziesz go w zakładce Zapisane
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {deck.length > 0 ? (
-                    deck.slice(-3).map((profile, sliceIndex, arr) => {
-                      const isTop = sliceIndex === arr.length - 1;
-                      const depth = arr.length - 1 - sliceIndex;
-                      const scale = 1 - depth * 0.03;
-                      const translateY = depth * 8;
-
-                      return (
-                        <SwipeCard
-                          key={profile.id}
-                          onSwipe={handleSwipe}
-                          isTop={isTop}
-                          onTap={isTop ? () => setDrawerOpen(true) : undefined}
-                          onContact={
-                            isTop ? () => setDialogOpen(true) : undefined
-                          }
-                          onSave={isTop ? () => {} : undefined}
-                          style={
-                            isTop
-                              ? { zIndex: arr.length }
-                              : {
-                                  transform: `scale(${scale}) translateY(${translateY}px)`,
-                                  zIndex: sliceIndex,
-                                }
-                          }
-                        >
-                          <ProfileCard caregiver={profile} />
-                        </SwipeCard>
-                      );
-                    })
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-black/4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-                      <div className="p-8 text-center">
-                        <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-[#34C759]/10">
-                          <Heart className="size-10 text-[#34C759]" />
-                        </div>
-                        <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
-                          Brak więcej opiekunek
-                        </h3>
-                        <p className="mb-6 text-[15px] text-[#8e8e93]">
-                          Sprawdź ponownie później
-                        </p>
-                        <button
-                          type="button"
-                          onClick={resetDeck}
-                          className="inline-flex items-center gap-2 rounded-full bg-[#34C759] px-6 py-3 text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,199,89,0.4)] transition-transform active:scale-95"
-                        >
-                          <RotateCcw className="size-4" />
-                          Zacznij od nowa
-                        </button>
-                      </div>
-                    </div>
-                  )}
+            </GlassCard>
+          ) : (
+            <GlassCard className="p-6">
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#007AFF]/10">
+                  <Heart className="size-8 text-[#007AFF]" />
                 </div>
-              ) : discoveryMode === "profile" ? (
-                <GlassCard className="space-y-4 p-4 md:p-5">
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {filteredCaregivers.map((caregiver) => (
-                      <motion.button
-                        key={caregiver.id}
-                        type="button"
-                        whileTap={{ scale: 0.97, opacity: 0.7 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 20,
-                        }}
-                        onClick={() =>
-                          setDeck((prev) => {
-                            const idx = prev.findIndex(
-                              (p) => p.id === caregiver.id,
-                            );
-                            if (idx < 0 || idx === prev.length - 1) return prev;
-                            const next = [...prev];
-                            const [item] = next.splice(idx, 1);
-                            next.push(item);
-                            return next;
-                          })
-                        }
-                        className="text-left"
-                      >
-                        <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
-                                {caregiver.name}
-                              </div>
-                              <div className="text-[13px] leading-[18px] text-[#8e8e93]">
-                                {caregiver.distanceKm.toFixed(1)} km ·{" "}
-                                {caregiver.hourlyRate} zł/h
-                              </div>
-                            </div>
-                            <Badge className="bg-[#007AFF]/12 text-[#007AFF] font-semibold">
-                              {caregiver.compatibility}%
-                            </Badge>
-                          </div>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {caregiver.specializations
-                              .slice(0, 3)
-                              .map((tag) => (
-                                <Badge key={tag.id}>{tag.label}</Badge>
-                              ))}
-                          </div>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </GlassCard>
-              ) : (
-                <GlassCard className="p-6">
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#007AFF]/10">
-                      <Heart className="size-8 text-[#007AFF]" />
-                    </div>
-                    <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
-                      Brak zapisanych profili
-                    </h3>
-                    <p className="max-w-xs text-[15px] text-[#8e8e93]">
-                      Przesuń kartę w prawo lub kliknij serduszko, aby zapisać
-                      profil opiekunki.
-                    </p>
-                  </div>
-                </GlassCard>
-              )}
-            </section>
-          </main>
+                <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
+                  Brak zapisanych profili
+                </h3>
+                <p className="max-w-xs text-[15px] text-[#8e8e93]">
+                  Przesuń kartę w prawo lub kliknij serduszko, aby zapisać
+                  profil opiekunki.
+                </p>
+              </div>
+            </GlassCard>
+          )}
 
           <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl md:static md:mx-auto md:max-w-md md:rounded-2xl md:border md:border-white/60 md:bg-white/50 md:pb-2 md:shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]">
             <BottomNavItem icon={House} label="Główna" active />

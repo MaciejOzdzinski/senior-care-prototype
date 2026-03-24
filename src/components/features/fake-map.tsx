@@ -7,6 +7,7 @@ interface FakeMapProps {
   activeCaregiverId: string;
   filteredCaregivers: CaregiverProfile[];
   onSelectCaregiver: (id: string) => void;
+  fullscreen?: boolean;
 }
 
 export function FakeMap({
@@ -14,9 +15,17 @@ export function FakeMap({
   activeCaregiverId,
   filteredCaregivers,
   onSelectCaregiver,
+  fullscreen = false,
 }: FakeMapProps) {
   return (
-    <div className="relative h-44 overflow-hidden rounded-2xl border border-black/[0.06] bg-[#e8e4d8]">
+    <div
+      className={cn(
+        "relative overflow-hidden bg-[#e8e4d8]",
+        fullscreen
+          ? "h-full w-full"
+          : "h-44 rounded-2xl border border-black/[0.06]",
+      )}
+    >
       {/* Water body */}
       <div className="absolute right-[-10%] top-[-8%] h-[55%] w-[45%] rounded-bl-[60px] bg-[#aad3df]" />
       <div className="absolute right-[-5%] top-[30%] h-[25%] w-[20%] rounded-bl-[30px] bg-[#aad3df]" />
