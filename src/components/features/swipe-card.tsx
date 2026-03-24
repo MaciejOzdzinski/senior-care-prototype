@@ -1,5 +1,4 @@
 import { type ReactNode, useRef, useState } from "react";
-import { Check, MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SwipeCardProps {
@@ -8,6 +7,7 @@ interface SwipeCardProps {
   style?: React.CSSProperties;
   onTap?: () => void;
   onContact?: () => void;
+  onSave?: () => void;
   children: ReactNode;
 }
 
@@ -17,6 +17,7 @@ export function SwipeCard({
   style,
   onTap,
   onContact,
+  onSave,
   children,
 }: SwipeCardProps) {
   const [dragState, setDragState] = useState({ x: 0, rotation: 0 });
@@ -111,33 +112,33 @@ export function SwipeCard({
       onTouchMove={(e) => handleMove(e.touches[0].clientX)}
       onTouchEnd={handleEnd}
     >
-      {/* Swipe right indicator — iOS pill */}
+      {/* Swipe right indicator — pill */}
       <div
         className={cn(
           "absolute top-5 right-5 z-10 rounded-full px-4 py-2 transition-all duration-200",
-          "bg-[#34C759] shadow-[0_2px_12px_rgba(52,199,89,0.4)]",
+          "bg-[#007AFF] shadow-[0_2px_12px_rgba(0,122,255,0.4)]",
           swipeDirection === "right"
             ? "opacity-100 scale-100"
             : "opacity-0 scale-90",
         )}
       >
         <span className="text-[15px] font-semibold tracking-tight text-white">
-          Zainteresowany
+          Zapisano
         </span>
       </div>
 
-      {/* Swipe left indicator — iOS pill */}
+      {/* Swipe left indicator — pill */}
       <div
         className={cn(
           "absolute top-5 left-5 z-10 rounded-full px-4 py-2 transition-all duration-200",
-          "bg-[#FF3B30] shadow-[0_2px_12px_rgba(255,59,48,0.4)]",
+          "bg-[#8e8e93] shadow-[0_2px_12px_rgba(142,142,147,0.4)]",
           swipeDirection === "left"
             ? "opacity-100 scale-100"
             : "opacity-0 scale-90",
         )}
       >
         <span className="text-[15px] font-semibold tracking-tight text-white">
-          Pomijam
+          Pominięto
         </span>
       </div>
 
@@ -145,47 +146,48 @@ export function SwipeCard({
       <div className="flex h-full flex-col p-4">
         {children}
 
-        {/* Action buttons — round, iOS style */}
+        {/* Decision buttons — HIG 3-tier hierarchy */}
         {isTop && (
           <div
-            className="flex items-center justify-center gap-5 pt-2"
+            className="flex items-center justify-center gap-4 pt-2"
             onMouseDown={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
           >
+            {/* Tertiary — text-only, lowest visual weight */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 handleButtonSwipe("left");
               }}
-              className="flex size-14 items-center justify-center rounded-full bg-[#FF3B30]/10 transition-transform active:scale-90"
-              aria-label="Pomiń"
+              className="px-4 py-2.5 text-[15px] font-medium text-[#8e8e93] transition-opacity active:opacity-50"
             >
-              <X className="size-7 text-[#FF3B30]" strokeWidth={2.5} />
+              Pomiń
             </button>
 
+            {/* Primary — filled, highest visual weight */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 onContact?.();
               }}
-              className="flex size-14 items-center justify-center rounded-full bg-[#007AFF] shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-90"
-              aria-label="Kontakt"
+              className="rounded-full bg-[#007AFF] px-6 py-2.5 text-[15px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-95"
             >
-              <MessageCircle className="size-6 text-white" strokeWidth={2} />
+              Napisz
             </button>
 
+            {/* Secondary — tinted, medium visual weight */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
+                onSave?.();
                 handleButtonSwipe("right");
               }}
-              className="flex size-14 items-center justify-center rounded-full bg-[#34C759]/10 transition-transform active:scale-90"
-              aria-label="Zainteresowany"
+              className="rounded-full bg-[#007AFF]/10 px-5 py-2.5 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-95"
             >
-              <Check className="size-7 text-[#34C759]" strokeWidth={2.5} />
+              Zapisz
             </button>
           </div>
         )}

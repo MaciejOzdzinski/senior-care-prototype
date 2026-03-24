@@ -32,7 +32,7 @@ const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
 export default function App() {
   const [role, setRole] = useState<RoleMode>("family");
   const [screen, setScreen] = useState<"role" | "discovery">("role");
-  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("cards");
+  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("map");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [matchAnimation, setMatchAnimation] = useState(false);
@@ -150,21 +150,14 @@ export default function App() {
             </div>
           </header>
 
-          <main className="grid min-w-0 gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-start">
-            <section className="min-w-0 space-y-4">
-              <GlassCard className="p-4">
-                <div className="mb-3 flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <SectionTitle>
-                      {isFamilyMode ? "Mapa dopasowań" : "Mapa zgłoszeń"}
-                    </SectionTitle>
-                    <p className="mt-1 text-sm text-[#8e8e93]">
-                      {isFamilyMode
-                        ? "Kliknięcie pinezki synchronizuje aktywną kartę niżej."
-                        : "Widzisz przybliżone strefy rodzin i aktywne potrzeby opieki."}
-                    </p>
-                  </div>
-                  <Badge className="shrink-0 self-start">
+          <main className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+            <section className="order-2 min-w-0 space-y-4 lg:sticky lg:top-4">
+              <GlassCard className="p-3">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <SectionTitle className="text-[15px]">
+                    {isFamilyMode ? "Mapa dopasowań" : "Mapa zgłoszeń"}
+                  </SectionTitle>
+                  <Badge className="shrink-0">
                     {isFamilyMode ? "3 km" : "2 aktywne zlecenia"}
                   </Badge>
                 </div>
@@ -200,23 +193,16 @@ export default function App() {
               </GlassCard>
             </section>
 
-            <section className="min-w-0 space-y-4">
-              <GlassCard className="p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <SectionTitle>
-                    {isFamilyMode ? "Dla Ciebie" : "Zgłoszenia w pobliżu"}
-                  </SectionTitle>
-                  <DiscoverySwitcher
-                    value={discoveryMode}
-                    onChange={setDiscoveryMode}
-                  />
-                </div>
-              </GlassCard>
+            <section className="order-1 min-w-0 space-y-4">
+              <div className="flex justify-center">
+                <DiscoverySwitcher
+                  value={discoveryMode}
+                  onChange={setDiscoveryMode}
+                />
+              </div>
 
-              {discoveryMode === "cards" ? (
+              {discoveryMode === "map" ? (
                 <div className="relative h-[340px]">
-                  {deck.length > 0 && <SwipeHint />}
-
                   {/* Match animation overlay */}
                   {matchAnimation && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xl">
@@ -229,10 +215,10 @@ export default function App() {
                         </div>
                         <div className="text-center">
                           <h2 className="text-[28px] font-bold tracking-tight text-white">
-                            Wysłano zapytanie
+                            Profil zapisany
                           </h2>
                           <p className="mt-1 text-[17px] text-white/70">
-                            {lastSwipedName} otrzyma powiadomienie
+                            {lastSwipedName} — znajdziesz go w zakładce Zapisane
                           </p>
                         </div>
                       </div>
@@ -253,8 +239,9 @@ export default function App() {
                           isTop={isTop}
                           onTap={isTop ? () => setDrawerOpen(true) : undefined}
                           onContact={
-                            isTop ? () => setDrawerOpen(true) : undefined
+                            isTop ? () => setDialogOpen(true) : undefined
                           }
+                          onSave={isTop ? () => {} : undefined}
                           style={
                             isTop
                               ? { zIndex: arr.length }
@@ -292,7 +279,7 @@ export default function App() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : discoveryMode === "profile" ? (
                 <GlassCard className="space-y-4 p-4 md:p-5">
                   <div className="grid gap-3 md:grid-cols-2">
                     {filteredCaregivers.map((caregiver) => (
@@ -344,6 +331,21 @@ export default function App() {
                         </div>
                       </motion.button>
                     ))}
+                  </div>
+                </GlassCard>
+              ) : (
+                <GlassCard className="p-6">
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#007AFF]/10">
+                      <Heart className="size-8 text-[#007AFF]" />
+                    </div>
+                    <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
+                      Brak zapisanych profili
+                    </h3>
+                    <p className="max-w-xs text-[15px] text-[#8e8e93]">
+                      Przesuń kartę w prawo lub kliknij serduszko, aby zapisać
+                      profil opiekunki.
+                    </p>
                   </div>
                 </GlassCard>
               )}

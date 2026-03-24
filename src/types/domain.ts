@@ -1,5 +1,5 @@
 export type RoleMode = "family" | "caregiver";
-export type DiscoveryMode = "cards" | "map";
+export type DiscoveryMode = "map" | "profile" | "saved";
 
 export interface CapabilityTag {
   id: string;
