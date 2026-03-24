@@ -2,11 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
+  BadgeCheck,
   Bell,
+  Bookmark,
+  Briefcase,
+  Clock,
   Filter,
   Heart,
   House,
   MessageCircleMore,
+  Star,
   UserRound,
   Users,
 } from "lucide-react";
@@ -17,7 +22,6 @@ import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
 import type { SheetState } from "@/components/features/map-bottom-sheet";
 import { RoleSelector } from "@/components/features/role-selector";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -243,21 +247,42 @@ export default function App() {
 
           {/* Scrollable content area */}
           <div className="min-h-0 flex-1 overflow-y-auto bg-[#f2f2f7]">
-            <div className="mx-auto max-w-md space-y-4 px-4 py-4 md:max-w-6xl md:px-6">
+            <div className="mx-auto max-w-md px-4 py-4 md:max-w-6xl md:px-6">
               {discoveryMode === "profile" ? (
-                <GlassCard className="space-y-4 p-4 md:p-5">
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {filteredCaregivers.map((caregiver) => (
+                <>
+                  {/* Sort summary */}
+                  <div className="mb-3 flex items-center justify-between px-1">
+                    <span className="text-[13px] font-medium text-[#8e8e93]">
+                      Najlepsze dopasowanie · {filteredCaregivers.length}{" "}
+                      profili
+                    </span>
+                  </div>
+
+                  {/* Filter chips */}
+                  <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-none">
+                    {allSpecializations.map((tag) => (
+                      <FilterChip
+                        key={tag.id}
+                        label={tag.label}
+                        active={activeFilters.has(tag.id)}
+                        onClick={() => toggleFilter(tag.id)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Card list */}
+                  <div className="space-y-3">
+                    {filteredCaregivers.map((caregiver, index) => (
                       <motion.button
                         key={caregiver.id}
                         type="button"
-                        whileTap={{ scale: 0.97, opacity: 0.7 }}
+                        whileTap={{ scale: 0.98, opacity: 0.8 }}
                         transition={{
                           type: "spring",
                           stiffness: 300,
                           damping: 20,
                         }}
-                        onClick={() =>
+                        onClick={() => {
                           setDeck((prev) => {
                             const idx = prev.findIndex(
                               (p) => p.id === caregiver.id,
@@ -267,37 +292,117 @@ export default function App() {
                             const [item] = next.splice(idx, 1);
                             next.push(item);
                             return next;
-                          })
-                        }
-                        className="text-left"
+                          });
+                          setDrawerOpen(true);
+                        }}
+                        className="w-full text-left"
                       >
-                        <div className="rounded-2xl border border-black/4 bg-[#f2f2f7] p-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <div className="text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
+                        <div
+                          className={`rounded-2xl bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${
+                            index === 0
+                              ? "ring-1 ring-[#007AFF]/20"
+                              : "border border-black/4"
+                          }`}
+                        >
+                          {/* Top pick badge */}
+                          {index === 0 && (
+                            <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-[#007AFF]/10 px-2.5 py-1 text-[11px] font-semibold text-[#007AFF]">
+                              <Star className="size-3" fill="currentColor" />
+                              Najlepsze dopasowanie
+                            </div>
+                          )}
+
+                          {/* Main row: avatar | info | match + save */}
+                          <div className="flex items-start gap-3">
+                            {/* Avatar */}
+                            <div className="relative shrink-0">
+                              <img
+                                src={caregiver.avatarUrl}
+                                alt={caregiver.name}
+                                className="size-12 rounded-full object-cover ring-2 ring-black/5"
+                              />
+                              {caregiver.verified && (
+                                <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-[#34C759] ring-2 ring-white">
+                                  <BadgeCheck
+                                    className="size-2.5 text-white"
+                                    strokeWidth={2.5}
+                                  />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Info */}
+                            <div className="min-w-0 flex-1">
+                              <h3 className="truncate text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
                                 {caregiver.name}
-                              </div>
-                              <div className="text-[13px] leading-[18px] text-[#8e8e93]">
-                                {caregiver.distanceKm.toFixed(1)} km ·{" "}
-                                {caregiver.hourlyRate} zł/h
+                              </h3>
+                              <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-[#8e8e93]">
+                                <span>
+                                  {caregiver.distanceKm
+                                    .toFixed(1)
+                                    .replace(".", ",")}{" "}
+                                  km
+                                </span>
+                                <span className="text-[#8e8e93]/40">·</span>
+                                <span>{caregiver.hourlyRate} zł/godz.</span>
+                                <span className="text-[#8e8e93]/40">·</span>
+                                <Star
+                                  className="size-3 text-[#FF9500]"
+                                  fill="currentColor"
+                                />
+                                <span className="font-medium text-[#1c1c1e]">
+                                  {caregiver.rating}
+                                </span>
                               </div>
                             </div>
-                            <Badge className="bg-[#007AFF]/12 text-[#007AFF] font-semibold">
-                              {caregiver.compatibility}%
-                            </Badge>
+
+                            {/* Match % + bookmark */}
+                            <div className="flex shrink-0 flex-col items-end gap-2">
+                              <span className="rounded-full bg-[#007AFF]/10 px-2.5 py-1 text-[13px] font-bold text-[#007AFF]">
+                                {caregiver.compatibility}%
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                                className="grid size-8 place-items-center rounded-full text-[#8e8e93] transition-colors active:bg-[#007AFF]/10 active:text-[#007AFF]"
+                              >
+                                <Bookmark className="size-4" />
+                              </button>
+                            </div>
                           </div>
-                          <div className="mt-4 flex flex-wrap gap-2">
+
+                          {/* Tags — max 3, lighter */}
+                          <div className="mt-2.5 flex flex-wrap gap-1.5">
                             {caregiver.specializations
                               .slice(0, 3)
                               .map((tag) => (
-                                <Badge key={tag.id}>{tag.label}</Badge>
+                                <span
+                                  key={tag.id}
+                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                >
+                                  {tag.label}
+                                </span>
                               ))}
+                          </div>
+
+                          {/* Experience + Availability */}
+                          <div className="mt-2 flex items-center gap-4 text-[12px] text-[#8e8e93]">
+                            <span className="inline-flex items-center gap-1">
+                              <Briefcase className="size-3" />
+                              {caregiver.yearsExperience} lat dośw.
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <Clock className="size-3" />
+                              {caregiver.availableLabel}
+                            </span>
                           </div>
                         </div>
                       </motion.button>
                     ))}
                   </div>
-                </GlassCard>
+                </>
               ) : (
                 <GlassCard className="p-6">
                   <div className="flex flex-col items-center justify-center py-8 text-center">
