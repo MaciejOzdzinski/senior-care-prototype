@@ -314,20 +314,27 @@ export default function App() {
 
                           {/* Main row: avatar | info | match + save */}
                           <div className="flex items-start gap-3">
-                            {/* Avatar */}
-                            <div className="relative shrink-0">
-                              <img
-                                src={caregiver.avatarUrl}
-                                alt={caregiver.name}
-                                className="size-12 rounded-full object-cover ring-2 ring-black/5"
-                              />
+                            {/* Avatar + verified label */}
+                            <div className="flex shrink-0 flex-col items-center">
+                              <div className="relative">
+                                <img
+                                  src={caregiver.avatarUrl}
+                                  alt={caregiver.name}
+                                  className="size-12 rounded-full object-cover ring-2 ring-black/5"
+                                />
+                                {caregiver.verified && (
+                                  <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-[#34C759] ring-2 ring-white">
+                                    <BadgeCheck
+                                      className="size-2.5 text-white"
+                                      strokeWidth={2.5}
+                                    />
+                                  </div>
+                                )}
+                              </div>
                               {caregiver.verified && (
-                                <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-[#34C759] ring-2 ring-white">
-                                  <BadgeCheck
-                                    className="size-2.5 text-white"
-                                    strokeWidth={2.5}
-                                  />
-                                </div>
+                                <span className="mt-0.5 text-[10px] font-medium text-[#34C759]">
+                                  Zweryfikowana
+                                </span>
                               )}
                             </div>
 
@@ -356,9 +363,9 @@ export default function App() {
                               </div>
                             </div>
 
-                            {/* Match % + bookmark */}
-                            <div className="flex shrink-0 flex-col items-end gap-2">
-                              <span className="rounded-full bg-[#007AFF]/10 px-2.5 py-1 text-[13px] font-bold text-[#007AFF]">
+                            {/* Match % + bookmark — unified right column */}
+                            <div className="flex shrink-0 flex-col items-center gap-2">
+                              <span className="rounded-full bg-[#007AFF]/10 px-2.5 py-1 text-[13px] font-bold tabular-nums text-[#007AFF]">
                                 {caregiver.compatibility}%
                               </span>
                               <button
@@ -366,9 +373,9 @@ export default function App() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                 }}
-                                className="grid size-8 place-items-center rounded-full text-[#8e8e93] transition-colors active:bg-[#007AFF]/10 active:text-[#007AFF]"
+                                className="grid size-8 place-items-center rounded-full bg-[#f2f2f7] text-[#8e8e93] transition-colors active:bg-[#007AFF]/12 active:text-[#007AFF]"
                               >
-                                <Bookmark className="size-4" />
+                                <Bookmark className="size-[18px]" />
                               </button>
                             </div>
                           </div>
