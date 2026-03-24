@@ -24,7 +24,7 @@ interface MapBottomSheetProps {
 }
 
 const SNAP_FRACTIONS: Record<SheetState, number> = {
-  collapsed: 0.2,
+  collapsed: 0.26,
   expanded: 0.72,
 };
 
@@ -292,16 +292,29 @@ export function MapBottomSheet({
           </div>
         )}
 
-        {/* Collapsed-only: tap hint */}
+        {/* Collapsed-only: trust badge + highlight + tap hint */}
         {sheetState === "collapsed" && (
           <button
             type="button"
             onClick={() => animateTo("expanded")}
-            className="mt-2 flex w-full items-center justify-center"
+            className="mt-2.5 flex w-full flex-col gap-2 text-left"
           >
-            <span className="text-[12px] text-[#8e8e93]">
+            {/* Highlight row */}
+            <div className="flex items-center gap-4 text-[13px] text-[#8e8e93]">
+              <span className="inline-flex items-center gap-1.5">
+                <Briefcase className="size-3.5" />
+                {caregiver.yearsExperience} lat doświadczenia
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="size-3.5" />
+                {caregiver.availableLabel}
+              </span>
+            </div>
+
+            {/* Tap hint */}
+            <p className="text-center text-[12px] text-[#8e8e93]">
               Stuknij, aby zobaczyć więcej
-            </span>
+            </p>
           </button>
         )}
       </div>
