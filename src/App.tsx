@@ -15,15 +15,15 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
-import { caregivers, mapCenter, allSpecializations } from "@/data/mock-data";
+import { caregivers, mapCenter } from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
+import { FilterBar } from "@/components/features/filter-bar";
 import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
 import type { SheetState } from "@/components/features/map-bottom-sheet";
 import { RoleSelector } from "@/components/features/role-selector";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
 import { Button } from "@/components/ui/button";
-import { FilterChip } from "@/components/ui/filter-chip";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassDialog } from "@/components/ui/dialog";
 import type { DiscoveryMode, RoleMode } from "@/types/domain";
@@ -192,16 +192,11 @@ export default function App() {
 
             {/* Filter chips — floating on map */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-4 pt-3">
-              <div className="pointer-events-auto flex gap-2 overflow-x-auto scrollbar-none">
-                {allSpecializations.map((tag) => (
-                  <FilterChip
-                    key={tag.id}
-                    label={tag.label}
-                    active={activeFilters.has(tag.id)}
-                    onClick={() => toggleFilter(tag.id)}
-                  />
-                ))}
-              </div>
+              <FilterBar
+                activeFilters={activeFilters}
+                onToggle={toggleFilter}
+                className="pointer-events-auto"
+              />
             </div>
 
             {/* Bottom sheet */}
@@ -275,16 +270,11 @@ export default function App() {
                   </div>
 
                   {/* Filter chips */}
-                  <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-none">
-                    {allSpecializations.map((tag) => (
-                      <FilterChip
-                        key={tag.id}
-                        label={tag.label}
-                        active={activeFilters.has(tag.id)}
-                        onClick={() => toggleFilter(tag.id)}
-                      />
-                    ))}
-                  </div>
+                  <FilterBar
+                    activeFilters={activeFilters}
+                    onToggle={toggleFilter}
+                    className="mb-4"
+                  />
 
                   {/* Card list */}
                   <div className="space-y-3">
