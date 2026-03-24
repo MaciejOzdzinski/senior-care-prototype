@@ -38,8 +38,23 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [sheetState, setSheetState] = useState<SheetState>("collapsed");
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const mapContentRef = useRef<HTMLDivElement>(null);
   const [mapContentHeight, setMapContentHeight] = useState(500);
+
+  const toggleSave = (id: string) => {
+    setSavedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const savedCaregivers = useMemo(
+    () => caregivers.filter((c) => savedIds.has(c.id)),
+    [savedIds],
+  );
 
   const toggleFilter = (id: string) => {
     setActiveFilters((prev) => {
@@ -196,7 +211,8 @@ export default function App() {
               onSheetStateChange={setSheetState}
               contentHeight={mapContentHeight}
               onContact={() => setDialogOpen(true)}
-              onSave={() => {}}
+              onSave={() => toggleSave(activeCaregiver.id)}
+              isSaved={savedIds.has(activeCaregiver.id)}
               onViewProfile={() => setDrawerOpen(true)}
             />
           </div>
@@ -273,9 +289,10 @@ export default function App() {
                   {/* Card list */}
                   <div className="space-y-3">
                     {filteredCaregivers.map((caregiver, index) => (
-                      <motion.button
+                      <motion.div
                         key={caregiver.id}
-                        type="button"
+                        role="button"
+                        tabIndex={0}
                         whileTap={{ scale: 0.98, opacity: 0.8 }}
                         transition={{
                           type: "spring",
@@ -295,7 +312,7 @@ export default function App() {
                           });
                           setDrawerOpen(true);
                         }}
-                        className="w-full text-left"
+                        className="w-full cursor-pointer text-left"
                       >
                         <div
                           className={`rounded-2xl bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${
@@ -372,10 +389,22 @@ export default function App() {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
+                                  toggleSave(caregiver.id);
                                 }}
-                                className="grid size-8 place-items-center rounded-full bg-[#f2f2f7] text-[#8e8e93] transition-colors active:bg-[#007AFF]/12 active:text-[#007AFF]"
+                                className={`grid size-8 place-items-center rounded-full transition-colors active:scale-95 ${
+                                  savedIds.has(caregiver.id)
+                                    ? "bg-[#007AFF]/12 text-[#007AFF]"
+                                    : "bg-[#f2f2f7] text-[#8e8e93]"
+                                }`}
                               >
-                                <Bookmark className="size-[18px]" />
+                                <Bookmark
+                                  className="size-[18px]"
+                                  fill={
+                                    savedIds.has(caregiver.id)
+                                      ? "currentColor"
+                                      : "none"
+                                  }
+                                />
                               </button>
                             </div>
                           </div>
@@ -406,11 +435,11 @@ export default function App() {
                             </span>
                           </div>
                         </div>
-                      </motion.button>
+                      </motion.div>
                     ))}
                   </div>
                 </>
-              ) : (
+              ) : savedCaregivers.length === 0 ? (
                 <GlassCard className="p-6">
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#007AFF]/10">
@@ -420,11 +449,152 @@ export default function App() {
                       Brak zapisanych profili
                     </h3>
                     <p className="max-w-xs text-[15px] text-[#8e8e93]">
-                      Przesuń kartę w prawo lub kliknij serduszko, aby zapisać
-                      profil opiekunki.
+                      Kliknij ikonę zakładki na karcie profilu, aby zapisać
+                      opiekunkę do ulubionych.
                     </p>
                   </div>
                 </GlassCard>
+              ) : (
+                <>
+                  {/* Summary */}
+                  <div className="mb-3 px-1">
+                    <span className="text-[13px] font-medium text-[#8e8e93]">
+                      Zapisane · {savedCaregivers.length}{" "}
+                      {savedCaregivers.length === 1 ? "profil" : "profili"}
+                    </span>
+                  </div>
+
+                  {/* Saved card list — same layout as Profile tab */}
+                  <div className="space-y-3">
+                    {savedCaregivers.map((caregiver) => (
+                      <motion.div
+                        key={caregiver.id}
+                        role="button"
+                        tabIndex={0}
+                        whileTap={{ scale: 0.98, opacity: 0.8 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                        }}
+                        onClick={() => {
+                          setDeck((prev) => {
+                            const idx = prev.findIndex(
+                              (p) => p.id === caregiver.id,
+                            );
+                            if (idx < 0 || idx === prev.length - 1) return prev;
+                            const next = [...prev];
+                            const [item] = next.splice(idx, 1);
+                            next.push(item);
+                            return next;
+                          });
+                          setDrawerOpen(true);
+                        }}
+                        className="w-full cursor-pointer text-left"
+                      >
+                        <div className="rounded-2xl border border-black/4 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+                          {/* Main row: avatar | info | match + save */}
+                          <div className="flex items-start gap-3">
+                            {/* Avatar + verified label */}
+                            <div className="flex shrink-0 flex-col items-center">
+                              <div className="relative">
+                                <img
+                                  src={caregiver.avatarUrl}
+                                  alt={caregiver.name}
+                                  className="size-12 rounded-full object-cover ring-2 ring-black/5"
+                                />
+                                {caregiver.verified && (
+                                  <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-[#34C759] ring-2 ring-white">
+                                    <BadgeCheck
+                                      className="size-2.5 text-white"
+                                      strokeWidth={2.5}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                              {caregiver.verified && (
+                                <span className="mt-0.5 text-[10px] font-medium text-[#34C759]">
+                                  Zweryfikowana
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Info */}
+                            <div className="min-w-0 flex-1">
+                              <h3 className="truncate text-[17px] font-semibold tracking-[-0.41px] text-[#1c1c1e]">
+                                {caregiver.name}
+                              </h3>
+                              <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-[#8e8e93]">
+                                <span>
+                                  {caregiver.distanceKm
+                                    .toFixed(1)
+                                    .replace(".", ",")}{" "}
+                                  km
+                                </span>
+                                <span className="text-[#8e8e93]/40">·</span>
+                                <span>{caregiver.hourlyRate} zł/godz.</span>
+                                <span className="text-[#8e8e93]/40">·</span>
+                                <Star
+                                  className="size-3 text-[#FF9500]"
+                                  fill="currentColor"
+                                />
+                                <span className="font-medium text-[#1c1c1e]">
+                                  {caregiver.rating}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Match % + bookmark — unified right column */}
+                            <div className="flex shrink-0 flex-col items-center gap-2">
+                              <span className="rounded-full bg-[#007AFF]/10 px-2.5 py-1 text-[13px] font-bold tabular-nums text-[#007AFF]">
+                                {caregiver.compatibility}%
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(caregiver.id);
+                                }}
+                                className="grid size-8 place-items-center rounded-full bg-[#007AFF]/12 text-[#007AFF] transition-colors active:scale-95"
+                              >
+                                <Bookmark
+                                  className="size-[18px]"
+                                  fill="currentColor"
+                                />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Tags — max 3, lighter */}
+                          <div className="mt-2.5 flex flex-wrap gap-1.5">
+                            {caregiver.specializations
+                              .slice(0, 3)
+                              .map((tag) => (
+                                <span
+                                  key={tag.id}
+                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                >
+                                  {tag.label}
+                                </span>
+                              ))}
+                          </div>
+
+                          {/* Experience + Availability */}
+                          <div className="mt-2 flex items-center gap-4 text-[12px] text-[#8e8e93]">
+                            <span className="inline-flex items-center gap-1">
+                              <Briefcase className="size-3" />
+                              {caregiver.yearsExperience} lat dośw.
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <Clock className="size-3" />
+                              {caregiver.availableLabel}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -484,9 +654,11 @@ export default function App() {
           setDialogOpen(true);
         }}
         onSave={() => {
+          toggleSave(activeCaregiver.id);
           setDrawerOpen(false);
           setSheetState("collapsed");
         }}
+        isSaved={savedIds.has(activeCaregiver.id)}
       />
     </div>
   );

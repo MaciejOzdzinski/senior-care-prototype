@@ -8,6 +8,7 @@ interface ProfileDrawerProps {
   caregiver: CaregiverProfile;
   onContact: () => void;
   onSave: () => void;
+  isSaved?: boolean;
 }
 
 export function ProfileDrawer({
@@ -16,6 +17,7 @@ export function ProfileDrawer({
   caregiver,
   onContact,
   onSave,
+  isSaved,
 }: ProfileDrawerProps) {
   return (
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
@@ -220,9 +222,13 @@ export function ProfileDrawer({
               <button
                 type="button"
                 onClick={onSave}
-                className="rounded-full bg-[#007AFF]/10 px-5 py-2.5 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-95"
+                className={`rounded-full px-5 py-2.5 text-[15px] font-semibold transition-transform active:scale-95 ${
+                  isSaved
+                    ? "bg-[#34C759]/12 text-[#34C759]"
+                    : "bg-[#007AFF]/10 text-[#007AFF]"
+                }`}
               >
-                Zapisz
+                {isSaved ? "Zapisano" : "Zapisz"}
               </button>
             </div>
           </div>
