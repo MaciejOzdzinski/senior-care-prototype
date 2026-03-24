@@ -1,16 +1,6 @@
 import { Drawer } from "vaul";
-import {
-  Bookmark,
-  Briefcase,
-  Clock,
-  Heart,
-  MapPin,
-  Quote,
-  Shield,
-  Star,
-} from "lucide-react";
+import { Briefcase, Clock, MapPin, Quote, Shield, Star, X } from "lucide-react";
 import type { CaregiverProfile } from "@/types/domain";
-import { Button } from "@/components/ui/button";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -32,12 +22,25 @@ export function ProfileDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30" />
         <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[96dvh] flex-col rounded-t-[20px] bg-white outline-none">
-          {/* Grabber — iOS handle */}
-          <div className="mx-auto mt-2.5 mb-0 h-[5px] w-9 shrink-0 rounded-full bg-[#c7c7cc]" />
+          {/* Grabber + close button row */}
+          <div className="relative shrink-0">
+            <div className="mx-auto mt-2.5 mb-0 h-[5px] w-9 rounded-full bg-[#c7c7cc]" />
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="absolute right-4 top-2 z-10 grid size-8 place-items-center rounded-full bg-[#e5e5ea] transition-transform active:scale-90"
+            >
+              <X className="size-4 text-[#3c3c43]" />
+            </button>
+          </div>
 
           <Drawer.Title className="sr-only">
             Profil — {caregiver.name}
           </Drawer.Title>
+
+          <Drawer.Description className="sr-only">
+            Pełny profil opiekuna {caregiver.name}
+          </Drawer.Description>
 
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[max(env(safe-area-inset-bottom),20px)]">
             {/* Header — avatar + key info */}
@@ -198,14 +201,29 @@ export function ProfileDrawer({
               </div>
             </section>
 
-            {/* CTA buttons */}
-            <div className="mt-8 grid grid-cols-2 gap-3">
-              <Button size="lg" variant="secondary" onClick={onSave}>
-                <Bookmark className="size-4" /> Zapisz
-              </Button>
-              <Button size="lg" onClick={onContact}>
-                <Heart className="size-4" /> Kontakt
-              </Button>
+            {/* CTA row — HIG 3-tier */}
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="px-4 py-2.5 text-[15px] font-medium text-[#8e8e93] transition-opacity active:opacity-50"
+              >
+                Pomiń
+              </button>
+              <button
+                type="button"
+                onClick={onContact}
+                className="rounded-full bg-[#007AFF] px-6 py-2.5 text-[15px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-95"
+              >
+                Napisz
+              </button>
+              <button
+                type="button"
+                onClick={onSave}
+                className="rounded-full bg-[#007AFF]/10 px-5 py-2.5 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-95"
+              >
+                Zapisz
+              </button>
             </div>
           </div>
         </Drawer.Content>

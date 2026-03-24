@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { motion, useAnimation } from "motion/react";
 import {
   BadgeCheck,
@@ -11,7 +11,7 @@ import {
 import type { CaregiverProfile } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
-export type SheetState = "collapsed" | "half" | "expanded";
+export type SheetState = "collapsed" | "expanded";
 
 interface MapBottomSheetProps {
   caregiver: CaregiverProfile;
@@ -25,7 +25,6 @@ interface MapBottomSheetProps {
 
 const SNAP_FRACTIONS: Record<SheetState, number> = {
   collapsed: 0.2,
-  half: 0.38,
   expanded: 0.72,
 };
 
@@ -58,7 +57,16 @@ export function MapBottomSheet({
     [contentHeight, controls, onSheetStateChange],
   );
 
-  const ordered: SheetState[] = ["collapsed", "half", "expanded"];
+  const ordered: SheetState[] = ["collapsed", "expanded"];
+
+  // Animate when sheetState changes externally (e.g. pin tap)
+  useEffect(() => {
+    const h = getSnapHeight(sheetState, contentHeight);
+    controls.start({
+      height: h,
+      transition: { type: "spring", stiffness: 350, damping: 32 },
+    });
+  }, [sheetState, contentHeight, controls]);
 
   const handleDragEnd = (_: unknown, info: { offset: { y: number } }) => {
     const dy = info.offset.y;
@@ -102,8 +110,14 @@ export function MapBottomSheet({
             : "overflow-hidden",
         )}
       >
-        {/* ── Collapsed: identification ── */}
-        <div className="flex items-center gap-3">
+        {/* ── Collapsed: quick identification row (tap to expand) ── */}
+        <button
+          type="button"
+          onClick={() => {
+            if (sheetState === "collapsed") animateTo("expanded");
+          }}
+          className="flex w-full items-center gap-3 text-left"
+        >
           <div className="relative shrink-0">
             <img
               src={caregiver.avatarUrl}
@@ -135,10 +149,10 @@ export function MapBottomSheet({
             </span>
             <p className="text-[11px] text-[#8e8e93]">/godz.</p>
           </div>
-        </div>
+        </button>
 
-        {/* ── Half-open: evaluation ── */}
-        {(sheetState === "half" || sheetState === "expanded") && (
+        {/* ── Expanded: evaluation + decision ── */}
+        {sheetState === "expanded" && (
           <div className="mt-3 space-y-3">
             {/* Tags */}
             <div className="flex flex-wrap gap-1.5">
@@ -205,7 +219,7 @@ export function MapBottomSheet({
           </div>
         )}
 
-        {/* ── Expanded: decision ── */}
+        {/* ── Expanded: details ── */}
         {sheetState === "expanded" && (
           <div className="mt-4 space-y-5 pb-6">
             {/* All tags */}
@@ -266,7 +280,10 @@ export function MapBottomSheet({
             {/* View full profile link */}
             <button
               type="button"
-              onClick={onViewProfile}
+              onClick={(e) => {
+                (e.currentTarget as HTMLElement).blur();
+                onViewProfile();
+              }}
               className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-[#f2f2f7] py-3 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-[0.98]"
             >
               <ChevronUp className="size-4" />
@@ -277,11 +294,15 @@ export function MapBottomSheet({
 
         {/* Collapsed-only: tap hint */}
         {sheetState === "collapsed" && (
-          <div className="mt-2 flex items-center justify-center">
+          <button
+            type="button"
+            onClick={() => animateTo("expanded")}
+            className="mt-2 flex w-full items-center justify-center"
+          >
             <span className="text-[12px] text-[#8e8e93]">
-              Przesuń w górę, aby zobaczyć więcej
+              Stuknij, aby zobaczyć więcej
             </span>
-          </div>
+          </button>
         )}
       </div>
     </motion.div>

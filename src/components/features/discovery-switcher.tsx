@@ -15,8 +15,8 @@ export function DiscoverySwitcher({ value, onChange }: DiscoverySwitcherProps) {
       onValueChange={(next) => onChange(next as DiscoveryMode)}
     >
       <Tabs.List className="relative grid grid-cols-3 rounded-[10px] bg-black/[0.06] p-[3px]">
-        <SwitcherTab value="map" label="Mapa" activeValue={value} />
         <SwitcherTab value="profile" label="Profile" activeValue={value} />
+        <SwitcherTab value="map" label="Mapa" activeValue={value} />
         <SwitcherTab value="saved" label="Zapisane" activeValue={value} />
       </Tabs.List>
     </Tabs.Root>

@@ -7,6 +7,7 @@ interface FakeMapProps {
   activeCaregiverId: string;
   filteredCaregivers: CaregiverProfile[];
   onSelectCaregiver: (id: string) => void;
+  onMapClick?: () => void;
   fullscreen?: boolean;
 }
 
@@ -15,6 +16,7 @@ export function FakeMap({
   activeCaregiverId,
   filteredCaregivers,
   onSelectCaregiver,
+  onMapClick,
   fullscreen = false,
 }: FakeMapProps) {
   return (
@@ -25,6 +27,10 @@ export function FakeMap({
           ? "h-full w-full"
           : "h-44 rounded-2xl border border-black/[0.06]",
       )}
+      onClick={(e) => {
+        if (onMapClick && !(e.target as HTMLElement).closest("button"))
+          onMapClick();
+      }}
     >
       {/* Water body */}
       <div className="absolute right-[-10%] top-[-8%] h-[55%] w-[45%] rounded-bl-[60px] bg-[#aad3df]" />
