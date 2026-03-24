@@ -2,6 +2,8 @@ import { motion } from "motion/react";
 import { ArrowLeft, Clock, Sparkles, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
+
 interface CaregiverWelcomeProps {
   onStart: () => void;
   onLogin: () => void;
@@ -11,7 +13,7 @@ interface CaregiverWelcomeProps {
 const benefits = [
   { icon: Clock, text: "około 3 minuty" },
   { icon: Sparkles, text: "bez opłat na start" },
-  { icon: CalendarCheck, text: "możesz uzupełnić część danych później" },
+  { icon: CalendarCheck, text: "resztę danych dodasz później" },
 ];
 
 export function CaregiverWelcome({
@@ -40,20 +42,22 @@ export function CaregiverWelcome({
         transition={{ type: "spring", stiffness: 260, damping: 24 }}
         className="w-full max-w-sm text-center"
       >
-        {/* Greeting icon */}
-        <div className="mx-auto mb-6 grid size-20 place-items-center rounded-[22px] bg-[#FF9500]/12">
-          <span className="text-[40px]">👋</span>
-        </div>
+        {/* Logo */}
+        <img
+          src={logoSrc}
+          alt="CareMatch"
+          className="mx-auto mb-6 size-20 object-contain"
+        />
 
         {/* Headline */}
-        <h1 className="text-[28px] font-bold tracking-[0.37px] text-[#1c1c1e]">
-          Witaj, pomożemy Ci zacząć
+        <h1 className="text-[22px] font-semibold tracking-[0.37px] text-[#1c1c1e]">
+          Pomożemy Ci zacząć
         </h1>
 
         {/* Subheadline */}
         <p className="mx-auto mt-3 max-w-[280px] text-[15px] leading-[20px] tracking-[-0.41px] text-[#3c3c43]/60">
-          W kilku krokach przygotujesz profil i zaczniesz otrzymywać dopasowane
-          zapytania od rodzin.
+          W kilku krokach przygotujesz profil i zaczniesz otrzymywać zapytania
+          od rodzin.
         </p>
 
         {/* Benefits list */}
@@ -69,7 +73,7 @@ export function CaregiverWelcome({
                 damping: 24,
                 delay: 0.15,
               }}
-              className="flex items-center gap-3 rounded-2xl border border-white/40 bg-white/40 px-4 py-3 text-left backdrop-blur-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+              className="flex items-center gap-3 rounded-xl border border-black/4 bg-white/40 px-4 py-2.5 text-left backdrop-blur-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
             >
               <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#FF9500]/10">
                 <Icon className="size-[18px] text-[#FF9500]" />
@@ -86,7 +90,7 @@ export function CaregiverWelcome({
           <Button
             size="lg"
             onClick={onStart}
-            className="w-full bg-[#FF9500] text-[17px] font-semibold shadow-[0_2px_12px_rgba(255,149,0,0.35)] hover:bg-[#E88A00]"
+            className="w-full bg-[#FF9500] text-[17px] font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-[#E88A00]"
           >
             Zaczynam
           </Button>
@@ -94,7 +98,7 @@ export function CaregiverWelcome({
           <button
             type="button"
             onClick={onLogin}
-            className="mt-4 text-[15px] font-medium tracking-[-0.41px] text-[#8e8e93] transition-colors active:text-[#1c1c1e]"
+            className="mt-3 text-[15px] font-semibold tracking-[-0.41px] text-[#48484a] transition-colors active:text-[#1c1c1e]"
           >
             Mam już konto
           </button>
