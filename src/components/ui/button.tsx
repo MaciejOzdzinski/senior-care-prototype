@@ -36,14 +36,16 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ className, size, variant, ...props }, ref) {
+  function Button({ className, size, variant, disabled, ...rest }, ref) {
     return (
       <motion.button
         ref={ref}
-        whileTap={{ scale: 0.97, opacity: 0.7 }}
+        {...(rest as React.ComponentProps<typeof motion.button>)}
+        whileTap={disabled ? undefined : { scale: 0.97, opacity: 0.7 }}
         transition={tapSpring}
+        disabled={disabled}
+        aria-disabled={disabled}
         className={cn(buttonVariants({ variant, size }), className)}
-        {...(props as React.ComponentProps<typeof motion.button>)}
       />
     );
   },
