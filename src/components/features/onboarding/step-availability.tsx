@@ -83,8 +83,8 @@ export const StepAvailability = ({ data, onChange }: StepAvailabilityProps) => {
                 transition={tapSpring}
                 className={`flex-1 min-h-11 rounded-xl text-center text-[13px] font-semibold tracking-[-0.08px] transition-colors ${
                   active
-                    ? "bg-[#FF9500]/12 text-[#FF9500]"
-                    : "bg-white/50 text-[#3c3c43]/60"
+                    ? "bg-[#FF9500] text-white shadow-[0_2px_8px_rgba(255,149,0,0.3)]"
+                    : "bg-white text-[#1c1c1e] shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
                 }`}
               >
                 {label}

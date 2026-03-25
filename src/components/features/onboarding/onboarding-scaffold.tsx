@@ -79,7 +79,7 @@ export function OnboardingScaffold({
             onClick={onBack}
             whileTap={{ scale: 0.97, opacity: 0.7 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="grid size-10 place-items-center rounded-full text-[#FF9500]"
+            className="grid size-10 place-items-center rounded-full bg-white text-[#FF9500] shadow-[0_1px_4px_rgba(0,0,0,0.12)]"
             aria-label="Wróć"
           >
             <ArrowLeft className="size-5" />
