@@ -100,7 +100,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         /* ─── MAP MODE: fullscreen map + bottom sheet ─── */
         <div className="fixed inset-0 flex flex-col">
           {/* Top bar — floating over map */}
-          <div className="relative z-20 flex items-center gap-3 bg-white/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
+          <div className="relative z-20 flex items-center gap-3 bg-[#fffcf8]/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <motion.button
               type="button"
               onClick={onBack}
@@ -121,7 +121,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Segmented control — floating */}
-          <div className="relative z-20 flex justify-center bg-white/70 pb-2 backdrop-blur-2xl">
+          <div className="relative z-20 flex justify-center bg-[#fffcf8]/70 pb-2 backdrop-blur-2xl">
             <DiscoverySwitcher
               value={discoveryMode}
               onChange={setDiscoveryMode}
@@ -173,7 +173,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#fffcf8]/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
             <BottomNavItem icon={House} label="Główna" active />
             <BottomNavItem icon={Users} label="Odkrywaj" />
             <BottomNavItem
@@ -188,7 +188,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         /* ─── PROFILE / SAVED MODE ─── */
         <div className="fixed inset-0 flex flex-col">
           {/* Top bar */}
-          <div className="relative z-20 flex items-center gap-3 bg-white/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
+          <div className="relative z-20 flex items-center gap-3 bg-[#fffcf8]/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <motion.button
               type="button"
               onClick={onBack}
@@ -209,7 +209,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Segmented control */}
-          <div className="relative z-20 flex justify-center bg-white/70 pb-2 backdrop-blur-2xl">
+          <div className="relative z-20 flex justify-center bg-[#fffcf8]/70 pb-2 backdrop-blur-2xl">
             <DiscoverySwitcher
               value={discoveryMode}
               onChange={setDiscoveryMode}
@@ -217,7 +217,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Scrollable content area */}
-          <div className="min-h-0 flex-1 overflow-y-auto bg-[#f2f2f7]">
+          <div className="min-h-0 flex-1 overflow-y-auto bg-[#f5f0ea]">
             <div className="mx-auto max-w-md px-4 py-4 md:max-w-6xl md:px-6">
               {discoveryMode === "profile" ? (
                 <>
@@ -265,7 +265,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                         className="w-full cursor-pointer text-left"
                       >
                         <div
-                          className={`rounded-2xl bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${
+                          className={`rounded-2xl bg-white/90 p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${
                             index === 0
                               ? "ring-1 ring-[#007AFF]/20"
                               : "border border-black/4"
@@ -344,7 +344,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                                 className={`grid size-8 place-items-center rounded-full transition-colors active:scale-95 ${
                                   savedIds.has(caregiver.id)
                                     ? "bg-[#007AFF]/12 text-[#007AFF]"
-                                    : "bg-[#f2f2f7] text-[#8e8e93]"
+                                    : "bg-[#efeae3] text-[#8e8e93]"
                                 }`}
                               >
                                 <Bookmark
@@ -366,7 +366,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#efeae3] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
                                 >
                                   {tag.label}
                                 </span>
@@ -442,7 +442,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                         }}
                         className="w-full cursor-pointer text-left"
                       >
-                        <div className="rounded-2xl border border-black/4 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+                        <div className="rounded-2xl border border-black/4 bg-white/90 p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
                           {/* Main row: avatar | info | match + save */}
                           <div className="flex items-start gap-3">
                             {/* Avatar + verified label */}
@@ -522,7 +522,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#efeae3] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
                                 >
                                   {tag.label}
                                 </span>
@@ -550,7 +550,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#fffcf8]/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
             <BottomNavItem icon={House} label="Główna" active />
             <BottomNavItem icon={Users} label="Odkrywaj" />
             <BottomNavItem
@@ -570,7 +570,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         description="Bottom sheet stylizowany jak iOS glass panel. Tu możesz potem podpiąć prawdziwy czat lub formularz pierwszego kontaktu."
       >
         <div className="space-y-4">
-          <div className="rounded-xl bg-[#f2f2f7] p-4 text-sm leading-6 text-[#3c3c43]">
+          <div className="rounded-xl bg-[#f5f0ea] p-4 text-sm leading-6 text-[#3c3c43]">
             <p>
               <strong className="text-[#1c1c1e]">{activeCaregiver.name}</strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz
