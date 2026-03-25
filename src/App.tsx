@@ -8,7 +8,7 @@ const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
 
 type Screen = "role" | "family" | "caregiver";
 
-export default function App() {
+const App = () => {
   const [role, setRole] = useState<RoleMode>("family");
   const [screen, setScreen] = useState<Screen>("role");
 
@@ -58,4 +58,6 @@ export default function App() {
       )}
     </div>
   );
-}
+};
+
+export default App;
