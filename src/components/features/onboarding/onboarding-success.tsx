@@ -48,7 +48,7 @@ export function OnboardingSuccess({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mx-auto mt-8 flex items-center justify-center gap-2 rounded-xl bg-white/40 px-4 py-2.5 text-[14px] font-medium tracking-[-0.41px] text-[#FF9500] backdrop-blur-2xl"
+          className="mx-auto mt-8 flex items-center justify-center gap-2 rounded-xl bg-[#ece6e0] px-4 py-2.5 text-[14px] font-medium tracking-[-0.41px] text-[#FF9500]"
         >
           <Sparkles className="size-4" />
           Dopasowania pojawią się wkrótce

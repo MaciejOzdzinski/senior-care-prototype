@@ -72,7 +72,7 @@ export function OnboardingScaffold({
   return (
     <div className="flex min-h-screen flex-col">
       {/* Top bar */}
-      <div className="sticky top-0 z-10 bg-white/60 px-4 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-2xl">
+      <div className="sticky top-0 z-10 bg-[#f2ede8]/72 px-4 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-2xl">
         <div className="mb-3 flex items-center">
           <motion.button
             type="button"
@@ -109,7 +109,7 @@ export function OnboardingScaffold({
       </div>
 
       {/* Sticky bottom CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-10 border-t border-black/4 bg-white/80 px-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-3 backdrop-blur-2xl">
+      <div className="fixed inset-x-0 bottom-0 z-10 border-t border-black/4 bg-[#f2ede8]/72 px-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-3 backdrop-blur-2xl">
         <motion.button
           type="button"
           onClick={ctaDisabled ? undefined : onNext}

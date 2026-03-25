@@ -98,9 +98,9 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
     <>
       {discoveryMode === "map" ? (
         /* ─── MAP MODE: fullscreen map + bottom sheet ─── */
-        <div className="fixed inset-0 flex flex-col">
+        <div className="fixed inset-0 flex flex-col bg-[#f4f4f8]">
           {/* Top bar — floating over map */}
-          <div className="relative z-20 flex items-center gap-3 bg-white/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
+          <div className="relative z-20 flex items-center gap-3 bg-[#eeeef2]/72 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <motion.button
               type="button"
               onClick={onBack}
@@ -121,7 +121,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Segmented control — floating */}
-          <div className="relative z-20 flex justify-center bg-white/70 pb-2 backdrop-blur-2xl">
+          <div className="relative z-20 flex justify-center bg-[#eeeef2]/72 pb-2 backdrop-blur-2xl">
             <DiscoverySwitcher
               value={discoveryMode}
               onChange={setDiscoveryMode}
@@ -173,7 +173,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#eeeef2]/72 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
             <BottomNavItem icon={House} label="Główna" active />
             <BottomNavItem icon={Users} label="Odkrywaj" />
             <BottomNavItem
@@ -186,9 +186,9 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         </div>
       ) : (
         /* ─── PROFILE / SAVED MODE ─── */
-        <div className="fixed inset-0 flex flex-col">
+        <div className="fixed inset-0 flex flex-col bg-[#f4f4f8]">
           {/* Top bar */}
-          <div className="relative z-20 flex items-center gap-3 bg-white/70 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
+          <div className="relative z-20 flex items-center gap-3 bg-[#eeeef2]/72 px-4 pb-2 pt-[max(env(safe-area-inset-top),12px)] shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-2xl">
             <motion.button
               type="button"
               onClick={onBack}
@@ -209,7 +209,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Segmented control */}
-          <div className="relative z-20 flex justify-center bg-white/70 pb-2 backdrop-blur-2xl">
+          <div className="relative z-20 flex justify-center bg-[#eeeef2]/72 pb-2 backdrop-blur-2xl">
             <DiscoverySwitcher
               value={discoveryMode}
               onChange={setDiscoveryMode}
@@ -217,7 +217,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Scrollable content area */}
-          <div className="min-h-0 flex-1 overflow-y-auto bg-[#f2f2f7]">
+          <div className="min-h-0 flex-1 overflow-y-auto bg-[#f4f4f8]">
             <div className="mx-auto max-w-md px-4 py-4 md:max-w-6xl md:px-6">
               {discoveryMode === "profile" ? (
                 <>
@@ -344,7 +344,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                                 className={`grid size-8 place-items-center rounded-full transition-colors active:scale-95 ${
                                   savedIds.has(caregiver.id)
                                     ? "bg-[#007AFF]/12 text-[#007AFF]"
-                                    : "bg-[#f2f2f7] text-[#8e8e93]"
+                                    : "bg-[#e8e8ec] text-[#8e8e93]"
                                 }`}
                               >
                                 <Bookmark
@@ -366,7 +366,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#e8e8ec] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
                                 >
                                   {tag.label}
                                 </span>
@@ -522,7 +522,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#f2f2f7] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#e8e8ec] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
                                 >
                                   {tag.label}
                                 </span>
@@ -550,7 +550,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-white/70 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
+          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#eeeef2]/72 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
             <BottomNavItem icon={House} label="Główna" active />
             <BottomNavItem icon={Users} label="Odkrywaj" />
             <BottomNavItem
@@ -570,7 +570,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         description="Bottom sheet stylizowany jak iOS glass panel. Tu możesz potem podpiąć prawdziwy czat lub formularz pierwszego kontaktu."
       >
         <div className="space-y-4">
-          <div className="rounded-xl bg-[#f2f2f7] p-4 text-sm leading-6 text-[#3c3c43]">
+          <div className="rounded-xl bg-[#e8e8ec] p-4 text-sm leading-6 text-[#3c3c43]">
             <p>
               <strong className="text-[#1c1c1e]">{activeCaregiver.name}</strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz

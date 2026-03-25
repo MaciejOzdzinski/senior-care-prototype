@@ -73,7 +73,7 @@ export function CaregiverWelcome({
                 damping: 24,
                 delay: 0.15,
               }}
-              className="flex items-center gap-3 rounded-xl border border-black/4 bg-white/40 px-4 py-2.5 text-left backdrop-blur-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+              className="flex items-center gap-3 rounded-xl border border-black/4 bg-white px-4 py-2.5 text-left shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
             >
               <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#FF9500]/10">
                 <Icon className="size-[18px] text-[#FF9500]" />
