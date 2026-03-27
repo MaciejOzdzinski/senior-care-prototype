@@ -8,7 +8,6 @@ import {
   Briefcase,
   Clock,
   Filter,
-  Heart,
   House,
   MessageCircleMore,
   Star,
@@ -22,7 +21,6 @@ import { FilterBar } from "@/components/features/filter-bar";
 import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
 import { Button } from "@/components/ui/button";
-import { GlassCard } from "@/components/ui/glass-card";
 import { GlassDialog } from "@/components/ui/dialog";
 import type { DiscoveryMode } from "@/types/domain";
 
@@ -371,20 +369,17 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                   </div>
                 </>
               ) : savedCaregivers.length === 0 ? (
-                <GlassCard className="p-6">
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#007AFF]/10">
-                      <Heart className="size-8 text-[#007AFF]" />
-                    </div>
-                    <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
-                      Brak zapisanych profili
-                    </h3>
-                    <p className="max-w-xs text-[15px] text-[#8e8e93]">
-                      Kliknij ikonę zakładki na karcie profilu, aby zapisać
-                      opiekunkę do ulubionych.
-                    </p>
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="mx-auto mb-5 flex size-[72px] items-center justify-center rounded-full bg-[#007AFF]/10">
+                    <Bookmark className="size-8 text-[#007AFF]" />
                   </div>
-                </GlassCard>
+                  <h3 className="mb-2 text-[20px] font-semibold tracking-tight text-[#1c1c1e]">
+                    Brak zapisanych profili
+                  </h3>
+                  <p className="max-w-[260px] text-[15px] leading-[22px] text-[#8e8e93]">
+                    Zapisuj opiekunów, którzy Ci pasują — znajdziesz ich tutaj.
+                  </p>
+                </div>
               ) : (
                 <>
                   {/* Summary */}
