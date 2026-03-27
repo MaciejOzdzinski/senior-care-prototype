@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { caregivers, mapCenter } from "@/data/mock-data";
 import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
-import { FakeMap } from "@/components/features/fake-map";
+import { LeafletMap } from "@/components/features/leaflet-map";
 import { FilterBar } from "@/components/features/filter-bar";
 import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
@@ -118,8 +118,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           {/* Map + bottom sheet content area */}
           <div className="relative min-h-0 flex-1">
             {/* Fullscreen map background */}
-            <FakeMap
-              role="family"
+            <LeafletMap
               activeCaregiverId={activeCaregiver?.id ?? ""}
               filteredCaregivers={filteredCaregivers}
               fullscreen
@@ -554,7 +553,9 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         <div className="space-y-4">
           <div className="rounded-xl bg-[#e8e8ec] p-4 text-sm leading-6 text-[#3c3c43]">
             <p>
-              <strong className="text-[#1c1c1e]">{activeCaregiver?.name}</strong>{" "}
+              <strong className="text-[#1c1c1e]">
+                {activeCaregiver?.name}
+              </strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz
               tu uruchomić:
             </p>
