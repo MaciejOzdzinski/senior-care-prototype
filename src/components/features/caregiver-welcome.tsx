@@ -16,11 +16,11 @@ const benefits = [
   { icon: CalendarCheck, text: "resztę danych dodasz później" },
 ];
 
-export function CaregiverWelcome({
+export const CaregiverWelcome = ({
   onStart,
   onLogin,
   onBack,
-}: CaregiverWelcomeProps) {
+}: CaregiverWelcomeProps) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">
       {/* Back button */}

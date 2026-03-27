@@ -4,10 +4,13 @@ import { ArrowLeft, Smartphone } from "lucide-react";
 import type { RoleMode } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
+type AuthVariant = "new" | "returning";
+
 interface AuthGateProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: RoleMode;
+  variant?: AuthVariant;
   onComplete: () => void;
 }
 
@@ -55,6 +58,7 @@ export const AuthGate = ({
   open,
   onOpenChange,
   mode,
+  variant = "new",
   onComplete,
 }: AuthGateProps) => {
   const [step, setStep] = useState<AuthStep>("methods");
@@ -151,12 +155,16 @@ export const AuthGate = ({
                 <h3 className="text-[22px] font-bold tracking-[-0.26px] text-[#1c1c1e]">
                   {isFamily
                     ? "Zaloguj się, aby kontynuować"
-                    : "Zaloguj się, aby zacząć"}
+                    : variant === "returning"
+                      ? "Witaj ponownie"
+                      : "Zaloguj się, aby zacząć"}
                 </h3>
                 <p className="mt-1 mb-6 text-[15px] leading-[22px] text-[#8e8e93]">
                   {isFamily
                     ? "Konto pozwala na kontakt z opiekunami i zapisywanie profili."
-                    : "Konto potrzebne do stworzenia profilu i otrzymywania zleceń."}
+                    : variant === "returning"
+                      ? "Zaloguj się do swojego profilu opiekuna."
+                      : "Konto potrzebne do stworzenia profilu i otrzymywania zleceń."}
                 </p>
 
                 <div className="space-y-2.5">

@@ -14,19 +14,10 @@ const App = () => {
   const [screen, setScreen] = useState<Screen>("role");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authGateOpen, setAuthGateOpen] = useState(false);
-  const [authGateMode, setAuthGateMode] = useState<RoleMode>("family");
 
-  const openAuthGate = (mode: RoleMode) => {
-    setAuthGateMode(mode);
-    setAuthGateOpen(true);
-  };
-
-  const handleAuthComplete = () => {
+  const handleFamilyAuthComplete = () => {
     setIsAuthenticated(true);
     setAuthGateOpen(false);
-    if (authGateMode === "caregiver") {
-      setScreen("caregiver");
-    }
   };
 
   return (
@@ -64,11 +55,7 @@ const App = () => {
               onChange={(nextRole) => {
                 setRole(nextRole);
                 if (nextRole === "caregiver") {
-                  if (isAuthenticated) {
-                    setScreen("caregiver");
-                  } else {
-                    openAuthGate("caregiver");
-                  }
+                  setScreen("caregiver");
                 } else {
                   setScreen("family");
                 }
@@ -80,18 +67,18 @@ const App = () => {
         <FamilyDiscovery
           onBack={() => setScreen("role")}
           isAuthenticated={isAuthenticated}
-          onRequireAuth={() => openAuthGate("family")}
+          onRequireAuth={() => setAuthGateOpen(true)}
         />
       ) : (
         <CaregiverFlow onBack={() => setScreen("role")} />
       )}
 
-      {/* Auth Gate */}
+      {/* Auth Gate — family mode only */}
       <AuthGate
         open={authGateOpen}
         onOpenChange={setAuthGateOpen}
-        mode={authGateMode}
-        onComplete={handleAuthComplete}
+        mode="family"
+        onComplete={handleFamilyAuthComplete}
       />
     </div>
   );
