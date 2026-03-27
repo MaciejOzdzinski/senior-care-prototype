@@ -172,7 +172,7 @@ export const AuthGate = ({
                   <button
                     type="button"
                     onClick={handleSocialAuth}
-                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[13px] bg-[#1c1c1e] text-[15px] font-semibold text-white transition-opacity active:opacity-80"
+                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-full bg-[#1c1c1e] text-[15px] font-semibold text-white transition-opacity active:opacity-80"
                   >
                     <AppleIcon />
                     Kontynuuj z Apple
@@ -182,7 +182,7 @@ export const AuthGate = ({
                   <button
                     type="button"
                     onClick={handleSocialAuth}
-                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[13px] border border-[#e5e5ea] bg-white text-[15px] font-semibold text-[#3c3c43] transition-opacity active:opacity-80"
+                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-full border border-[#e5e5ea] bg-white text-[15px] font-semibold text-[#3c3c43] transition-opacity active:opacity-80"
                   >
                     <GoogleIcon />
                     Kontynuuj z Google
@@ -199,7 +199,7 @@ export const AuthGate = ({
                   <button
                     type="button"
                     onClick={() => setStep("phone")}
-                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[13px] border border-[#e5e5ea] bg-white text-[15px] font-semibold text-[#3c3c43] transition-opacity active:opacity-80"
+                    className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-full border border-[#e5e5ea] bg-white text-[15px] font-semibold text-[#3c3c43] transition-opacity active:opacity-80"
                   >
                     <Smartphone className="size-[18px]" />
                     Użyj numeru telefonu
@@ -240,7 +240,7 @@ export const AuthGate = ({
                 </p>
 
                 <div
-                  className="flex h-[52px] items-center gap-2.5 rounded-[13px] border-2 px-4 transition-colors"
+                  className="flex h-[52px] items-center gap-2.5 rounded-2xl border-2 px-4 transition-colors"
                   style={{ borderColor: phone.length > 0 ? color : "#e5e5ea" }}
                 >
                   <span className="shrink-0 text-[15px] font-semibold text-[#8e8e93]">
@@ -266,7 +266,7 @@ export const AuthGate = ({
                     setStep("code");
                     setTimer(60);
                   }}
-                  className="mt-5 h-[50px] w-full rounded-[14px] text-[16px] font-bold transition-all active:scale-[0.98] disabled:cursor-default"
+                  className="mt-5 h-[50px] w-full rounded-full text-[16px] font-bold transition-all active:scale-[0.98] disabled:cursor-default"
                   style={{
                     backgroundColor: phone.length >= 9 ? color : "#f2f2f7",
                     color: phone.length >= 9 ? "#fff" : "#c7c7cc",

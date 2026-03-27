@@ -186,7 +186,7 @@ const RequestCard = ({ need }: { need: CareNeed }) => {
             onClick={() => setApplied(true)}
             whileTap={{ scale: 0.97, opacity: 0.8 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="flex h-[44px] w-full items-center justify-center gap-2 rounded-[12px] bg-[#FF9500] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(255,149,0,0.28)]"
+            className="flex h-[44px] w-full items-center justify-center gap-2 rounded-full bg-[#FF9500] text-[15px] font-semibold text-white shadow-[0_2px_8px_rgba(255,149,0,0.28)]"
           >
             <Send className="size-[15px]" />
             Odpowiedz na zlecenie
