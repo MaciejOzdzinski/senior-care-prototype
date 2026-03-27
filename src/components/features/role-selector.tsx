@@ -14,6 +14,7 @@ const roleOptions: Array<{
   description: string;
   Icon: typeof UserRoundSearch;
   iconColor: string;
+  chevronColor: string;
 }> = [
   {
     value: "family",
@@ -21,6 +22,7 @@ const roleOptions: Array<{
     description: "Znajdź zaufaną osobę do opieki nad bliskim seniorem.",
     Icon: UserRoundSearch,
     iconColor: "text-[#34C759]",
+    chevronColor: "text-[#007AFF]",
   },
   {
     value: "caregiver",
@@ -28,14 +30,22 @@ const roleOptions: Array<{
     description: "Odbieraj dopasowane zlecenia i buduj zaufany profil.",
     Icon: HeartHandshake,
     iconColor: "text-[#FF9500]",
+    chevronColor: "text-[#FF9500]",
   },
 ];
 
-export function RoleSelector({ value, onChange }: RoleSelectorProps) {
+export const RoleSelector = ({ value, onChange }: RoleSelectorProps) => {
   return (
     <div className="space-y-3">
       {roleOptions.map(
-        ({ value: roleValue, title, description, Icon, iconColor }) => {
+        ({
+          value: roleValue,
+          title,
+          description,
+          Icon,
+          iconColor,
+          chevronColor,
+        }) => {
           const isActive = value === roleValue;
 
           return (
@@ -45,7 +55,7 @@ export function RoleSelector({ value, onChange }: RoleSelectorProps) {
               onClick={() => onChange(roleValue)}
               whileTap={{ scale: 0.97, opacity: 0.7 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="block w-full text-left"
+              className="group block w-full text-left"
             >
               <div
                 className={cn(
@@ -66,7 +76,19 @@ export function RoleSelector({ value, onChange }: RoleSelectorProps) {
                       {description}
                     </p>
                   </div>
-                  <ChevronRight className="size-5 shrink-0 text-[#c7c7cc]" />
+                  <motion.span
+                    className="shrink-0"
+                    initial={false}
+                    whileTap={{ x: 3 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  >
+                    <ChevronRight
+                      className={cn(
+                        "size-5 transition-transform duration-200 group-active:translate-x-0.5",
+                        chevronColor,
+                      )}
+                    />
+                  </motion.span>
                 </div>
               </div>
             </motion.button>
@@ -75,4 +97,4 @@ export function RoleSelector({ value, onChange }: RoleSelectorProps) {
       )}
     </div>
   );
-}
+};
