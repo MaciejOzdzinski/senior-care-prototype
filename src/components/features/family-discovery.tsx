@@ -26,14 +26,28 @@ import type { DiscoveryMode } from "@/types/domain";
 
 interface FamilyDiscoveryProps {
   onBack: () => void;
+  isAuthenticated: boolean;
+  onRequireAuth: () => void;
 }
 
-export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
+export function FamilyDiscovery({
+  onBack,
+  isAuthenticated,
+  onRequireAuth,
+}: FamilyDiscoveryProps) {
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("profile");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+
+  const guardAuth = (action: () => void) => {
+    if (isAuthenticated) {
+      action();
+    } else {
+      onRequireAuth();
+    }
+  };
 
   const toggleSave = (id: string) => {
     setSavedIds((prev) => {
@@ -318,7 +332,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  toggleSave(caregiver.id);
+                                  guardAuth(() => toggleSave(caregiver.id));
                                 }}
                                 className={`grid size-8 place-items-center rounded-full transition-colors active:scale-95 ${
                                   savedIds.has(caregiver.id)
@@ -479,7 +493,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  toggleSave(caregiver.id);
+                                  guardAuth(() => toggleSave(caregiver.id));
                                 }}
                                 className="grid size-8 place-items-center rounded-full bg-[#007AFF]/12 text-[#007AFF] transition-colors active:scale-95"
                               >
@@ -577,10 +591,20 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           }}
           caregiver={activeCaregiver}
           onContact={() => {
+            if (!isAuthenticated) {
+              setDrawerOpen(false);
+              onRequireAuth();
+              return;
+            }
             setDrawerOpen(false);
             setDialogOpen(true);
           }}
           onSave={() => {
+            if (!isAuthenticated) {
+              setDrawerOpen(false);
+              onRequireAuth();
+              return;
+            }
             toggleSave(activeCaregiver.id);
             setDrawerOpen(false);
           }}

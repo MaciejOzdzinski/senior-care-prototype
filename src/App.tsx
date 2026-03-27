@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AuthGate } from "@/components/features/auth-gate";
 import { CaregiverFlow } from "@/components/features/caregiver-flow";
 import { FamilyDiscovery } from "@/components/features/family-discovery";
 import { RoleSelector } from "@/components/features/role-selector";
@@ -11,6 +12,22 @@ type Screen = "role" | "family" | "caregiver";
 const App = () => {
   const [role, setRole] = useState<RoleMode>("family");
   const [screen, setScreen] = useState<Screen>("role");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authGateOpen, setAuthGateOpen] = useState(false);
+  const [authGateMode, setAuthGateMode] = useState<RoleMode>("family");
+
+  const openAuthGate = (mode: RoleMode) => {
+    setAuthGateMode(mode);
+    setAuthGateOpen(true);
+  };
+
+  const handleAuthComplete = () => {
+    setIsAuthenticated(true);
+    setAuthGateOpen(false);
+    if (authGateMode === "caregiver") {
+      setScreen("caregiver");
+    }
+  };
 
   return (
     <div className="relative min-h-screen text-[#1c1c1e]">
@@ -46,16 +63,36 @@ const App = () => {
               value={role}
               onChange={(nextRole) => {
                 setRole(nextRole);
-                setScreen(nextRole === "caregiver" ? "caregiver" : "family");
+                if (nextRole === "caregiver") {
+                  if (isAuthenticated) {
+                    setScreen("caregiver");
+                  } else {
+                    openAuthGate("caregiver");
+                  }
+                } else {
+                  setScreen("family");
+                }
               }}
             />
           </div>
         </div>
       ) : screen === "family" ? (
-        <FamilyDiscovery onBack={() => setScreen("role")} />
+        <FamilyDiscovery
+          onBack={() => setScreen("role")}
+          isAuthenticated={isAuthenticated}
+          onRequireAuth={() => openAuthGate("family")}
+        />
       ) : (
         <CaregiverFlow onBack={() => setScreen("role")} />
       )}
+
+      {/* Auth Gate */}
+      <AuthGate
+        open={authGateOpen}
+        onOpenChange={setAuthGateOpen}
+        mode={authGateMode}
+        onComplete={handleAuthComplete}
+      />
     </div>
   );
 };
