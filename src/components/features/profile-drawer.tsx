@@ -25,15 +25,9 @@ export function ProfileDrawer({
         <Drawer.Overlay className="fixed inset-0 z-40 bg-black/30" />
         <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[96dvh] flex-col rounded-t-[20px] bg-white outline-none">
           {/* Grabber + close button row */}
-          <div className="relative shrink-0">
+          {/* Grabber */}
+          <div className="shrink-0">
             <div className="mx-auto mt-2.5 mb-0 h-[5px] w-9 rounded-full bg-[#c7c7cc]" />
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="absolute right-4 top-2 z-10 grid size-8 place-items-center rounded-full bg-[#e5e5ea] transition-transform active:scale-90"
-            >
-              <X className="size-4 text-[#3c3c43]" />
-            </button>
           </div>
 
           <Drawer.Title className="sr-only">
@@ -45,7 +39,7 @@ export function ProfileDrawer({
           </Drawer.Description>
 
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[max(env(safe-area-inset-bottom),20px)]">
-            {/* Header — avatar + key info */}
+            {/* Header — avatar + key info + close button */}
             <div className="flex items-start gap-4">
               <img
                 src={caregiver.avatarUrl}
@@ -80,6 +74,13 @@ export function ProfileDrawer({
                   </span>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="shrink-0 self-start rounded-full bg-[#f2f2f7] p-2 mr-2 text-[#8e8e93] transition-colors active:bg-[#e5e5ea]"
+              >
+                <X className="size-4" />
+              </button>
             </div>
 
             {/* Stats row */}
