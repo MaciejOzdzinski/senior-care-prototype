@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { familyNeeds } from "@/data/mock-data";
 import type { CareNeed } from "@/types/domain";
+import { BottomNav } from "@/components/ui/bottom-nav";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -52,10 +53,15 @@ const completenessPercent = Math.round(
   (completedCount / completenessItems.length) * 100,
 );
 
-const tabs: { id: DashTab; icon: React.ElementType; label: string }[] = [
+const tabs: {
+  id: DashTab;
+  icon: React.ElementType;
+  label: string;
+  badge?: number;
+}[] = [
   { id: "home", icon: House, label: "Główna" },
   { id: "orders", icon: Briefcase, label: "Zlecenia" },
-  { id: "messages", icon: MessageCircleMore, label: "Wiadomości" },
+  { id: "messages", icon: MessageCircleMore, label: "Wiadomości", badge: 2 },
   { id: "profile", icon: UserRound, label: "Profil" },
 ];
 
@@ -431,39 +437,13 @@ export const CaregiverDashboard = ({ firstName }: CaregiverDashboardProps) => {
       </div>
 
       {/* ── Bottom Tab Bar ───────────────────────────────── */}
-      <nav className="z-10 border-t border-black/6 bg-white/92 pb-[max(env(safe-area-inset-bottom),8px)] pt-1.5 backdrop-blur-2xl">
-        <div className="flex">
-          {tabs.map(({ id, icon: Icon, label }) => {
-            const isActive = activeTab === id;
-            return (
-              <motion.button
-                key={id}
-                type="button"
-                onClick={() => setActiveTab(id)}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="flex flex-1 flex-col items-center gap-0.5 py-1.5"
-              >
-                <Icon
-                  className={cn(
-                    "size-6 transition-colors duration-150",
-                    isActive ? "text-[#FF9500]" : "text-[#c7c7cc]",
-                  )}
-                  strokeWidth={isActive ? 2.2 : 1.6}
-                />
-                <span
-                  className={cn(
-                    "text-[10px] font-medium transition-colors duration-150",
-                    isActive ? "text-[#FF9500]" : "text-[#c7c7cc]",
-                  )}
-                >
-                  {label}
-                </span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </nav>
+      <BottomNav
+        tabs={tabs}
+        activeId={activeTab}
+        accentClass="text-[#FF9500]"
+        className="z-10 bg-white/92"
+        onTabChange={(id) => setActiveTab(id as DashTab)}
+      />
     </div>
   );
 };

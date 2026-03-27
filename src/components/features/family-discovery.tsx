@@ -20,9 +20,17 @@ import { LeafletMap } from "@/components/features/leaflet-map";
 import { FilterBar } from "@/components/features/filter-bar";
 import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
+import { BottomNav, type BottomNavTab } from "@/components/ui/bottom-nav";
 import { Button } from "@/components/ui/button";
 import { GlassDialog } from "@/components/ui/dialog";
 import type { DiscoveryMode } from "@/types/domain";
+
+const FAMILY_TABS: BottomNavTab[] = [
+  { id: "home", icon: House, label: "Główna" },
+  { id: "discover", icon: Users, label: "Odkrywaj" },
+  { id: "messages", icon: MessageCircleMore, label: "Wiadomości", badge: 3 },
+  { id: "profile", icon: UserRound, label: "Profil" },
+];
 
 interface FamilyDiscoveryProps {
   onBack: () => void;
@@ -166,16 +174,12 @@ export function FamilyDiscovery({
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#eeeef2]/72 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
-            <BottomNavItem icon={House} label="Główna" active />
-            <BottomNavItem icon={Users} label="Odkrywaj" />
-            <BottomNavItem
-              icon={MessageCircleMore}
-              label="Wiadomości"
-              badgeCount={3}
-            />
-            <BottomNavItem icon={UserRound} label="Profil" />
-          </nav>
+          <BottomNav
+            tabs={FAMILY_TABS}
+            activeId="home"
+            accentClass="text-[#007AFF]"
+            className="relative z-20 bg-[#eeeef2]/72 shadow-[0_-1px_0_rgba(0,0,0,0.04)]"
+          />
         </div>
       ) : (
         /* ─── PROFILE / SAVED MODE ─── */
@@ -540,16 +544,12 @@ export function FamilyDiscovery({
           </div>
 
           {/* Bottom navigation */}
-          <nav className="relative z-20 grid grid-cols-4 border-t border-black/6 bg-[#eeeef2]/72 px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2 shadow-[0_-1px_0_rgba(0,0,0,0.04)] backdrop-blur-2xl">
-            <BottomNavItem icon={House} label="Główna" active />
-            <BottomNavItem icon={Users} label="Odkrywaj" />
-            <BottomNavItem
-              icon={MessageCircleMore}
-              label="Wiadomości"
-              badgeCount={3}
-            />
-            <BottomNavItem icon={UserRound} label="Profil" />
-          </nav>
+          <BottomNav
+            tabs={FAMILY_TABS}
+            activeId="home"
+            accentClass="text-[#007AFF]"
+            className="relative z-20 bg-[#eeeef2]/72 shadow-[0_-1px_0_rgba(0,0,0,0.04)]"
+          />
         </div>
       )}
 
@@ -632,40 +632,6 @@ function IconBubble({ icon: Icon, label }: IconBubbleProps) {
       className="grid size-10 place-items-center rounded-full bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm"
     >
       <Icon className="size-5 text-[#1c1c1e]" />
-    </motion.button>
-  );
-}
-
-interface BottomNavItemProps {
-  icon: typeof House;
-  label: string;
-  active?: boolean;
-  badgeCount?: number;
-}
-
-function BottomNavItem({
-  icon: Icon,
-  label,
-  active = false,
-  badgeCount,
-}: BottomNavItemProps) {
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.97, opacity: 0.7 }}
-      className={`relative inline-flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 text-[10px] ${
-        active ? "text-[#007AFF]" : "text-[#8e8e93]"
-      }`}
-    >
-      <div className="relative">
-        <Icon className="size-5.5" strokeWidth={active ? 2.2 : 1.8} />
-        {badgeCount != null && badgeCount > 0 ? (
-          <span className="absolute -right-2 -top-1 flex size-4 items-center justify-center rounded-full bg-[#FF3B30] text-[10px] font-bold leading-none text-white shadow-sm">
-            {badgeCount}
-          </span>
-        ) : null}
-      </div>
-      <span className="font-medium">{label}</span>
     </motion.button>
   );
 }
