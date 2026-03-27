@@ -1,4 +1,4 @@
-import { InstallPwaButton } from "@/components/features/installPwaButton";
+import { InstallPwaButton } from "@/components/features/InstallPwaButton";
 
 export default function MessagesEmptyState() {
   return (
