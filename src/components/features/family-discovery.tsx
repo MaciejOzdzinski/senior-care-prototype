@@ -69,7 +69,9 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
       activeFilters.size === 0
         ? caregivers
         : caregivers.filter((c) =>
-            c.specializations.some((s) => activeFilters.has(s.id)),
+            [...activeFilters].every((id) =>
+              c.specializations.some((s) => s.id === id),
+            ),
           ),
     [activeFilters],
   );
