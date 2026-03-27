@@ -118,7 +118,7 @@ export function ProfileDrawer({
                 {caregiver.specializations.map((tag) => (
                   <span
                     key={tag.id}
-                    className="rounded-full bg-[#34C759]/12 px-3.5 py-1.5 text-[13px] font-semibold text-[#34C759]"
+                    className="rounded-full bg-[#7676801f] px-3.5 py-1.5 text-[13px] font-semibold text-[#636366]"
                   >
                     {tag.label}
                   </span>

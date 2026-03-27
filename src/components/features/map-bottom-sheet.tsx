@@ -161,7 +161,7 @@ export function MapBottomSheet({
               {caregiver.specializations.slice(0, 3).map((tag) => (
                 <span
                   key={tag.id}
-                  className="rounded-full bg-[#34C759]/10 px-2.5 py-1 text-[13px] font-medium text-[#34C759]"
+                  className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
                 >
                   {tag.label}
                 </span>
@@ -234,7 +234,7 @@ export function MapBottomSheet({
                 {caregiver.specializations.slice(3).map((tag) => (
                   <span
                     key={tag.id}
-                    className="rounded-full bg-[#34C759]/10 px-2.5 py-1 text-[13px] font-medium text-[#34C759]"
+                    className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
                   >
                     {tag.label}
                   </span>

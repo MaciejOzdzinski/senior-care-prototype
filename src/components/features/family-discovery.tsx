@@ -359,14 +359,14 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                             </div>
                           </div>
 
-                          {/* Tags — max 3, lighter */}
+                          {/* Tags — max 3, label style */}
                           <div className="mt-2.5 flex flex-wrap gap-1.5">
                             {caregiver.specializations
                               .slice(0, 3)
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#e8e8ec] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#7676801f] px-2.5 py-0.5 text-[12px] font-medium text-[#636366]"
                                 >
                                   {tag.label}
                                 </span>
@@ -515,14 +515,14 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                             </div>
                           </div>
 
-                          {/* Tags — max 3, lighter */}
+                          {/* Tags — max 3, label style */}
                           <div className="mt-2.5 flex flex-wrap gap-1.5">
                             {caregiver.specializations
                               .slice(0, 3)
                               .map((tag) => (
                                 <span
                                   key={tag.id}
-                                  className="rounded-full bg-[#e8e8ec] px-2.5 py-0.5 text-[12px] font-medium text-[#8e8e93]"
+                                  className="rounded-full bg-[#7676801f] px-2.5 py-0.5 text-[12px] font-medium text-[#636366]"
                                 >
                                   {tag.label}
                                 </span>
