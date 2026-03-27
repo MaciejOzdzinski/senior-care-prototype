@@ -1,5 +1,13 @@
 import { Drawer } from "vaul";
-import { Briefcase, Clock, MapPin, Quote, Shield, Star, X } from "lucide-react";
+import {
+  BadgeCheck,
+  Briefcase,
+  Clock,
+  MapPin,
+  Quote,
+  Star,
+  X,
+} from "lucide-react";
 import type { CaregiverProfile } from "@/types/domain";
 
 interface ProfileDrawerProps {
@@ -41,20 +49,25 @@ export function ProfileDrawer({
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[max(env(safe-area-inset-bottom),20px)]">
             {/* Header — avatar + key info + close button */}
             <div className="flex items-start gap-4">
-              <img
-                src={caregiver.avatarUrl}
-                alt={caregiver.name}
-                className="size-20 shrink-0 rounded-full object-cover ring-2 ring-white shadow-md"
-              />
+              <div className="relative shrink-0">
+                <img
+                  src={caregiver.avatarUrl}
+                  alt={caregiver.name}
+                  className="size-20 rounded-full object-cover ring-2 ring-white shadow-md"
+                />
+                {caregiver.verified && (
+                  <div className="absolute -bottom-0.5 -right-0.5 flex size-6 items-center justify-center rounded-full bg-[#34C759] ring-2 ring-white">
+                    <BadgeCheck
+                      className="size-3.5 text-white"
+                      strokeWidth={2.5}
+                    />
+                  </div>
+                )}
+              </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="truncate text-[22px] font-bold tracking-[-0.26px] text-[#1c1c1e]">
-                    {caregiver.name}
-                  </h3>
-                  {caregiver.verified && (
-                    <Shield className="size-5 shrink-0 fill-[#34C759] text-white" />
-                  )}
-                </div>
+                <h3 className="truncate text-[22px] font-bold tracking-[-0.26px] text-[#1c1c1e]">
+                  {caregiver.name}
+                </h3>
                 <div className="mt-1 flex items-center gap-1.5 text-[15px] text-[#8e8e93]">
                   <span>{caregiver.age} lat</span>
                   <span>·</span>
@@ -77,7 +90,7 @@ export function ProfileDrawer({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="shrink-0 self-start rounded-full bg-[#f2f2f7] p-2 mr-2 text-[#8e8e93] transition-colors active:bg-[#e5e5ea]"
+                className="shrink-0 self-start rounded-full bg-[#f2f2f7] p-2 mr-2  text-[#8e8e93] transition-colors active:bg-[#e5e5ea]"
               >
                 <X className="size-4" />
               </button>
