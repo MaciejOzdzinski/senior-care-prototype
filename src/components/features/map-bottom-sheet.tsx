@@ -1,126 +1,41 @@
-import { useRef, useCallback, useEffect } from "react";
-import { motion, useAnimation } from "motion/react";
-import {
-  BadgeCheck,
-  Bookmark,
-  Briefcase,
-  ChevronUp,
-  Clock,
-  MapPin,
-  Star,
-} from "lucide-react";
+import { motion } from "motion/react";
+import { BadgeCheck, Briefcase, Clock, Star } from "lucide-react";
 import type { CaregiverProfile } from "@/types/domain";
-import { cn } from "@/lib/utils";
-
-export type SheetState = "collapsed" | "expanded";
 
 interface MapBottomSheetProps {
   caregiver: CaregiverProfile;
-  sheetState: SheetState;
-  onSheetStateChange: (state: SheetState) => void;
-  onContact: () => void;
-  onSave: () => void;
-  isSaved?: boolean;
   onViewProfile: () => void;
-  contentHeight: number;
 }
 
-const SNAP_FRACTIONS: Record<SheetState, number> = {
-  collapsed: 0.38,
-  expanded: 0.72,
-};
-
-function getSnapHeight(state: SheetState, contentH: number) {
-  return Math.round(contentH * SNAP_FRACTIONS[state]);
-}
-
-export function MapBottomSheet({
+export const MapBottomSheet = ({
   caregiver,
-  sheetState,
-  onSheetStateChange,
-  onContact,
-  onSave,
-  isSaved,
   onViewProfile,
-  contentHeight,
-}: MapBottomSheetProps) {
-  const controls = useAnimation();
-  const dragStartY = useRef(0);
-  const currentH = getSnapHeight(sheetState, contentHeight);
-
-  const animateTo = useCallback(
-    (state: SheetState) => {
-      const h = getSnapHeight(state, contentHeight);
-      controls.start({
-        height: h,
-        transition: { type: "spring", stiffness: 350, damping: 32 },
-      });
-      onSheetStateChange(state);
-    },
-    [contentHeight, controls, onSheetStateChange],
-  );
-
-  const ordered: SheetState[] = ["collapsed", "expanded"];
-
-  // Animate when sheetState changes externally (e.g. pin tap)
-  useEffect(() => {
-    const h = getSnapHeight(sheetState, contentHeight);
-    controls.start({
-      height: h,
-      transition: { type: "spring", stiffness: 350, damping: 32 },
-    });
-  }, [sheetState, contentHeight, controls]);
-
+}: MapBottomSheetProps) => {
   const handleDragEnd = (_: unknown, info: { offset: { y: number } }) => {
-    const dy = info.offset.y;
-    const threshold = 40;
-    const idx = ordered.indexOf(sheetState);
-
-    if (dy < -threshold && idx < ordered.length - 1) {
-      animateTo(ordered[idx + 1]);
-    } else if (dy > threshold && idx > 0) {
-      animateTo(ordered[idx - 1]);
-    } else {
-      animateTo(sheetState);
-    }
+    if (info.offset.y < -40) onViewProfile();
   };
 
   return (
     <motion.div
-      className="absolute inset-x-0 bottom-0 z-20 flex flex-col rounded-t-[20px] bg-white shadow-[0_-4px_24px_rgba(0,0,0,0.12)]"
-      animate={controls}
-      initial={{ height: currentH }}
-      style={{ height: currentH }}
+      className="absolute inset-x-0 bottom-0 z-20 touch-none rounded-t-[20px] bg-white shadow-[0_-4px_24px_rgba(0,0,0,0.12)] after:absolute after:inset-x-0 after:top-[calc(100%-1px)] after:h-[200px] after:bg-white"
       drag="y"
       dragConstraints={{ top: 0, bottom: 0 }}
-      dragElastic={0.1}
-      onDragStart={(_, info) => {
-        dragStartY.current = info.point.y;
-      }}
+      dragElastic={0.25}
       onDragEnd={handleDragEnd}
     >
-      {/* Drag handle */}
+      {/* Grabber */}
       <div className="flex shrink-0 justify-center pb-2 pt-2.5">
         <div className="h-[5px] w-9 rounded-full bg-[#c7c7cc]" />
       </div>
 
-      {/* Content — scrollable only when expanded */}
-      <div
-        className={cn(
-          "flex-1 min-h-0 px-5",
-          sheetState === "expanded"
-            ? "overflow-y-auto overscroll-contain"
-            : "overflow-hidden",
-        )}
+      {/* Content — tap opens full ProfileDrawer */}
+      <button
+        type="button"
+        onClick={onViewProfile}
+        className="flex w-full flex-col gap-2.5 px-5 pb-4 text-left"
       >
-        {/* ── Collapsed: quick identification row (tap to expand) ── */}
-        <button
-          type="button"
-          onClick={() => {
-            if (sheetState === "collapsed") animateTo("expanded");
-          }}
-          className="flex w-full items-center gap-3 text-left"
-        >
+        {/* Top row: avatar + name/stats + price */}
+        <div className="flex w-full items-center gap-3">
           <div className="relative shrink-0">
             <img
               src={caregiver.avatarUrl}
@@ -152,218 +67,47 @@ export function MapBottomSheet({
             </span>
             <p className="text-[11px] text-[#8e8e93]">/godz.</p>
           </div>
-        </button>
+        </div>
 
-        {/* ── Expanded: evaluation + decision ── */}
-        {sheetState === "expanded" && (
-          <div className="mt-3 space-y-3">
-            {/* Tags */}
-            <div className="flex flex-wrap gap-1.5">
-              {caregiver.specializations.slice(0, 3).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
-                >
-                  {tag.label}
-                </span>
-              ))}
-            </div>
-
-            {/* Experience + Availability */}
-            <div className="flex items-center gap-4 text-[13px] text-[#3c3c43]">
-              <span className="flex items-center gap-1.5">
-                <Briefcase className="size-3.5 text-[#8e8e93]" />
-                {caregiver.yearsExperience} lat doświadczenia
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="size-3.5 text-[#8e8e93]" />
-                {caregiver.availableLabel}
-              </span>
-            </div>
-
-            {/* Match bar */}
-            <div className="h-9 w-full overflow-hidden rounded-xl bg-[#007AFF]/8">
-              <div
-                className="flex h-full items-center px-3"
-                style={{
-                  width: `${caregiver.compatibility}%`,
-                  backgroundColor: "rgba(0, 122, 255, 0.12)",
-                }}
-              >
-                <p className="whitespace-nowrap text-[12px] font-medium text-[#007AFF]">
-                  {caregiver.compatibility}% dopasowania
-                </p>
-              </div>
-            </div>
-
-            {/* CTA — primary on top, secondary below */}
-            <div className="space-y-2 pb-[max(env(safe-area-inset-bottom),34px)]">
-              {/* Primary — full-width filled */}
-              <button
-                type="button"
-                onClick={onContact}
-                className="h-[50px] w-full rounded-full bg-[#007AFF] text-[17px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-[0.98]"
-              >
-                Napisz
-              </button>
-
-              {/* Secondary — ghost bookmark */}
-              <button
-                type="button"
-                onClick={onSave}
-                className={`flex h-[44px] w-full items-center justify-center gap-1.5 rounded-full text-[15px] font-medium transition-opacity active:opacity-50 ${
-                  isSaved ? "text-[#34C759]" : "text-[#007AFF]"
-                }`}
-              >
-                <Bookmark
-                  className="size-4"
-                  fill={isSaved ? "currentColor" : "none"}
-                />
-                {isSaved ? "Zapisano" : "Zapisz"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Expanded: details ── */}
-        {sheetState === "expanded" && (
-          <div className="mt-4 space-y-5 pb-6">
-            {/* All tags */}
-            {caregiver.specializations.length > 3 && (
-              <div className="flex flex-wrap gap-1.5">
-                {caregiver.specializations.slice(3).map((tag) => (
-                  <span
-                    key={tag.id}
-                    className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
-                  >
-                    {tag.label}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Stats row */}
-            <div className="grid grid-cols-3 gap-3">
-              <StatCell
-                icon={<MapPin className="size-4 text-[#007AFF]" />}
-                value={`${caregiver.distanceKm.toFixed(1)} km`}
-                label="Odległość"
-              />
-              <StatCell
-                icon={<Briefcase className="size-4 text-[#FF9500]" />}
-                value={`${caregiver.yearsExperience} lat`}
-                label="Doświadczenie"
-              />
-              <StatCell
-                icon={<Star className="size-4 text-[#FF9500]" />}
-                value={`${caregiver.compatibility}%`}
-                label="Dopasowanie"
-              />
-            </div>
-
-            {/* Why match */}
-            {caregiver.whyMatch.length > 0 && (
-              <section>
-                <h4 className="mb-2 text-[13px] font-semibold uppercase tracking-wider text-[#8e8e93]">
-                  Dlaczego to dopasowanie?
-                </h4>
-                <ul className="space-y-2">
-                  {caregiver.whyMatch.map((reason, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2.5 text-[15px] leading-[22px] text-[#3c3c43]"
-                    >
-                      <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#007AFF]/10 text-[11px] font-bold text-[#007AFF]">
-                        {i + 1}
-                      </span>
-                      {reason}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* View full profile link */}
-            <button
-              type="button"
-              onClick={(e) => {
-                (e.currentTarget as HTMLElement).blur();
-                onViewProfile();
-              }}
-              className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-[#f2f2f7] py-3 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-[0.98]"
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5">
+          {caregiver.specializations.slice(0, 3).map((tag) => (
+            <span
+              key={tag.id}
+              className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
             >
-              <ChevronUp className="size-4" />
-              Zobacz pełny profil
-            </button>
-          </div>
-        )}
+              {tag.label}
+            </span>
+          ))}
+        </div>
 
-        {/* Collapsed-only: tags + highlights + match bar */}
-        {sheetState === "collapsed" && (
-          <button
-            type="button"
-            onClick={() => animateTo("expanded")}
-            className="mt-2.5 flex w-full flex-col gap-2.5 text-left"
+        {/* Experience + Availability */}
+        <div className="flex items-center gap-4 text-[13px] text-[#8e8e93]">
+          <span className="inline-flex items-center gap-1.5">
+            <Briefcase className="size-3.5" />
+            {caregiver.yearsExperience} lat doświadczenia
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="size-3.5" />
+            {caregiver.availableLabel}
+          </span>
+        </div>
+
+        {/* Match bar */}
+        <div className="h-9 w-full overflow-hidden rounded-xl bg-[#007AFF]/8">
+          <div
+            className="flex h-full items-center px-3"
+            style={{
+              width: `${caregiver.compatibility}%`,
+              backgroundColor: "rgba(0, 122, 255, 0.12)",
+            }}
           >
-            {/* Tags */}
-            <div className="flex flex-wrap gap-1.5">
-              {caregiver.specializations.slice(0, 3).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
-                >
-                  {tag.label}
-                </span>
-              ))}
-            </div>
-
-            {/* Experience + Availability */}
-            <div className="flex items-center gap-4 text-[13px] text-[#8e8e93]">
-              <span className="inline-flex items-center gap-1.5">
-                <Briefcase className="size-3.5" />
-                {caregiver.yearsExperience} lat doświadczenia
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="size-3.5" />
-                {caregiver.availableLabel}
-              </span>
-            </div>
-
-            {/* Match bar */}
-            <div className="h-9 w-full overflow-hidden rounded-xl bg-[#007AFF]/8">
-              <div
-                className="flex h-full items-center px-3"
-                style={{
-                  width: `${caregiver.compatibility}%`,
-                  backgroundColor: "rgba(0, 122, 255, 0.12)",
-                }}
-              >
-                <p className="whitespace-nowrap text-[12px] font-medium text-[#007AFF]">
-                  {caregiver.compatibility}% dopasowania
-                </p>
-              </div>
-            </div>
-          </button>
-        )}
-      </div>
+            <p className="whitespace-nowrap text-[12px] font-medium text-[#007AFF]">
+              {caregiver.compatibility}% dopasowania
+            </p>
+          </div>
+        </div>
+      </button>
     </motion.div>
   );
-}
-
-function StatCell({
-  icon,
-  value,
-  label,
-}: {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1 rounded-2xl bg-[#f2f2f7] px-3 py-3">
-      {icon}
-      <span className="text-[17px] font-bold text-[#1c1c1e]">{value}</span>
-      <span className="text-[11px] text-[#8e8e93]">{label}</span>
-    </div>
-  );
-}
+};

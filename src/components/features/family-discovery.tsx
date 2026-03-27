@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
@@ -20,7 +20,6 @@ import { DiscoverySwitcher } from "@/components/features/discovery-switcher";
 import { FakeMap } from "@/components/features/fake-map";
 import { FilterBar } from "@/components/features/filter-bar";
 import { MapBottomSheet } from "@/components/features/map-bottom-sheet";
-import type { SheetState } from "@/components/features/map-bottom-sheet";
 import { ProfileDrawer } from "@/components/features/profile-drawer";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -36,10 +35,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
-  const [sheetState, setSheetState] = useState<SheetState>("collapsed");
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
-  const mapContentRef = useRef<HTMLDivElement>(null);
-  const [mapContentHeight, setMapContentHeight] = useState(500);
 
   const toggleSave = (id: string) => {
     setSavedIds((prev) => {
@@ -85,17 +81,6 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
   const topCard = deck[deck.length - 1] ?? null;
   const activeCaregiver = topCard ?? caregivers[0];
 
-  useEffect(() => {
-    const measure = () => {
-      if (mapContentRef.current) {
-        setMapContentHeight(mapContentRef.current.clientHeight);
-      }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [discoveryMode]);
-
   return (
     <>
       {discoveryMode === "map" ? (
@@ -131,14 +116,14 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
           </div>
 
           {/* Map + bottom sheet content area */}
-          <div ref={mapContentRef} className="relative min-h-0 flex-1">
+          <div className="relative min-h-0 flex-1">
             {/* Fullscreen map background */}
             <FakeMap
               role="family"
               activeCaregiverId={activeCaregiver.id}
               filteredCaregivers={filteredCaregivers}
               fullscreen
-              onMapClick={() => setSheetState("collapsed")}
+              onMapClick={() => {}}
               onSelectCaregiver={(id) => {
                 setDeck((prev) => {
                   const idx = prev.findIndex((p) => p.id === id);
@@ -148,7 +133,6 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
                   next.push(item);
                   return next;
                 });
-                setSheetState("expanded");
               }}
             />
 
@@ -164,12 +148,6 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
             {/* Bottom sheet */}
             <MapBottomSheet
               caregiver={activeCaregiver}
-              sheetState={sheetState}
-              onSheetStateChange={setSheetState}
-              contentHeight={mapContentHeight}
-              onContact={() => setDialogOpen(true)}
-              onSave={() => toggleSave(activeCaregiver.id)}
-              isSaved={savedIds.has(activeCaregiver.id)}
               onViewProfile={() => setDrawerOpen(true)}
             />
           </div>
@@ -597,18 +575,15 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         open={drawerOpen}
         onOpenChange={(open) => {
           setDrawerOpen(open);
-          if (!open) setSheetState("collapsed");
         }}
         caregiver={activeCaregiver}
         onContact={() => {
           setDrawerOpen(false);
-          setSheetState("collapsed");
           setDialogOpen(true);
         }}
         onSave={() => {
           toggleSave(activeCaregiver.id);
           setDrawerOpen(false);
-          setSheetState("collapsed");
         }}
         isSaved={savedIds.has(activeCaregiver.id)}
       />
