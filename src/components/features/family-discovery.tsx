@@ -79,7 +79,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
   }, [filteredCaregivers]);
 
   const topCard = deck[deck.length - 1] ?? null;
-  const activeCaregiver = topCard ?? caregivers[0];
+  const activeCaregiver = topCard ?? filteredCaregivers[0] ?? null;
 
   return (
     <>
@@ -120,7 +120,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
             {/* Fullscreen map background */}
             <FakeMap
               role="family"
-              activeCaregiverId={activeCaregiver.id}
+              activeCaregiverId={activeCaregiver?.id ?? ""}
               filteredCaregivers={filteredCaregivers}
               fullscreen
               onMapClick={() => {}}
@@ -146,10 +146,12 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
             </div>
 
             {/* Bottom sheet */}
-            <MapBottomSheet
-              caregiver={activeCaregiver}
-              onViewProfile={() => setDrawerOpen(true)}
-            />
+            {activeCaregiver && (
+              <MapBottomSheet
+                caregiver={activeCaregiver}
+                onViewProfile={() => setDrawerOpen(true)}
+              />
+            )}
           </div>
 
           {/* Bottom navigation */}
@@ -552,7 +554,7 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         <div className="space-y-4">
           <div className="rounded-xl bg-[#e8e8ec] p-4 text-sm leading-6 text-[#3c3c43]">
             <p>
-              <strong className="text-[#1c1c1e]">{activeCaregiver.name}</strong>{" "}
+              <strong className="text-[#1c1c1e]">{activeCaregiver?.name}</strong>{" "}
               jest dostępna jako najlepsze dopasowanie w okolicy. W MVP możesz
               tu uruchomić:
             </p>
@@ -571,22 +573,24 @@ export function FamilyDiscovery({ onBack }: FamilyDiscoveryProps) {
         </div>
       </GlassDialog>
 
-      <ProfileDrawer
-        open={drawerOpen}
-        onOpenChange={(open) => {
-          setDrawerOpen(open);
-        }}
-        caregiver={activeCaregiver}
-        onContact={() => {
-          setDrawerOpen(false);
-          setDialogOpen(true);
-        }}
-        onSave={() => {
-          toggleSave(activeCaregiver.id);
-          setDrawerOpen(false);
-        }}
-        isSaved={savedIds.has(activeCaregiver.id)}
-      />
+      {activeCaregiver && (
+        <ProfileDrawer
+          open={drawerOpen}
+          onOpenChange={(open) => {
+            setDrawerOpen(open);
+          }}
+          caregiver={activeCaregiver}
+          onContact={() => {
+            setDrawerOpen(false);
+            setDialogOpen(true);
+          }}
+          onSave={() => {
+            toggleSave(activeCaregiver.id);
+            setDrawerOpen(false);
+          }}
+          isSaved={savedIds.has(activeCaregiver.id)}
+        />
+      )}
     </>
   );
 }
