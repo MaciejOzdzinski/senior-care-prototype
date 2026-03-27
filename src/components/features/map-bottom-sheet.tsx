@@ -2,6 +2,7 @@ import { useRef, useCallback, useEffect } from "react";
 import { motion, useAnimation } from "motion/react";
 import {
   BadgeCheck,
+  Bookmark,
   Briefcase,
   ChevronUp,
   Clock,
@@ -195,30 +196,29 @@ export function MapBottomSheet({
               </div>
             </div>
 
-            {/* CTA row — HIG 3-tier */}
-            <div className="flex items-center justify-center gap-4 pb-1">
-              <button
-                type="button"
-                className="px-4 py-2.5 text-[15px] font-medium text-[#8e8e93] transition-opacity active:opacity-50"
-              >
-                Pomiń
-              </button>
+            {/* CTA — primary on top, secondary below */}
+            <div className="space-y-2 pb-[max(env(safe-area-inset-bottom),34px)]">
+              {/* Primary — full-width filled */}
               <button
                 type="button"
                 onClick={onContact}
-                className="rounded-full bg-[#007AFF] px-6 py-2.5 text-[15px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-95"
+                className="h-[50px] w-full rounded-full bg-[#007AFF] text-[17px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-[0.98]"
               >
                 Napisz
               </button>
+
+              {/* Secondary — ghost bookmark */}
               <button
                 type="button"
                 onClick={onSave}
-                className={`rounded-full px-5 py-2.5 text-[15px] font-semibold transition-transform active:scale-95 ${
-                  isSaved
-                    ? "bg-[#34C759]/12 text-[#34C759]"
-                    : "bg-[#007AFF]/10 text-[#007AFF]"
+                className={`flex h-[44px] w-full items-center justify-center gap-1.5 rounded-full text-[15px] font-medium transition-opacity active:opacity-50 ${
+                  isSaved ? "text-[#34C759]" : "text-[#007AFF]"
                 }`}
               >
+                <Bookmark
+                  className="size-4"
+                  fill={isSaved ? "currentColor" : "none"}
+                />
                 {isSaved ? "Zapisano" : "Zapisz"}
               </button>
             </div>

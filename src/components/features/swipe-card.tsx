@@ -1,4 +1,5 @@
 import { type ReactNode, useRef, useState } from "react";
+import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SwipeCardProps {
@@ -146,49 +147,50 @@ export function SwipeCard({
       <div className="flex h-full flex-col p-4">
         {children}
 
-        {/* Decision buttons — HIG 3-tier hierarchy */}
+        {/* Decision buttons — primary CTA on top, secondary row below */}
         {isTop && (
           <div
-            className="flex items-center justify-center gap-4 pt-2"
+            className="space-y-2 pt-2"
             onMouseDown={(e) => e.stopPropagation()}
             onTouchStart={(e) => e.stopPropagation()}
           >
-            {/* Tertiary — text-only, lowest visual weight */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleButtonSwipe("left");
-              }}
-              className="px-4 py-2.5 text-[15px] font-medium text-[#8e8e93] transition-opacity active:opacity-50"
-            >
-              Pomiń
-            </button>
-
-            {/* Primary — filled, highest visual weight */}
+            {/* Primary — full-width filled */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 onContact?.();
               }}
-              className="rounded-full bg-[#007AFF] px-6 py-2.5 text-[15px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-95"
+              className="h-[50px] w-full rounded-full bg-[#007AFF] text-[17px] font-semibold text-white shadow-[0_2px_10px_rgba(0,122,255,0.35)] transition-transform active:scale-[0.98]"
             >
               Napisz
             </button>
 
-            {/* Secondary — tinted, medium visual weight */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSave?.();
-                handleButtonSwipe("right");
-              }}
-              className="rounded-full bg-[#007AFF]/10 px-5 py-2.5 text-[15px] font-semibold text-[#007AFF] transition-transform active:scale-95"
-            >
-              Zapisz
-            </button>
+            {/* Secondary row — ghost actions */}
+            <div className="flex items-center justify-between px-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleButtonSwipe("left");
+                }}
+                className="px-4 py-2.5 text-[15px] font-medium text-[#8e8e93] transition-opacity active:opacity-50"
+              >
+                Pomiń
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSave?.();
+                  handleButtonSwipe("right");
+                }}
+                className="flex items-center gap-1.5 px-4 py-2.5 text-[15px] font-medium text-[#007AFF] transition-opacity active:opacity-50"
+              >
+                <Bookmark className="size-4" />
+                Zapisz
+              </button>
+            </div>
           </div>
         )}
       </div>
