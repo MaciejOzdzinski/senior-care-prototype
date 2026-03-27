@@ -26,7 +26,7 @@ interface MapBottomSheetProps {
 }
 
 const SNAP_FRACTIONS: Record<SheetState, number> = {
-  collapsed: 0.26,
+  collapsed: 0.38,
   expanded: 0.72,
 };
 
@@ -298,14 +298,26 @@ export function MapBottomSheet({
           </div>
         )}
 
-        {/* Collapsed-only: trust badge + highlight + tap hint */}
+        {/* Collapsed-only: tags + highlights + match bar */}
         {sheetState === "collapsed" && (
           <button
             type="button"
             onClick={() => animateTo("expanded")}
-            className="mt-2.5 flex w-full flex-col gap-2 text-left"
+            className="mt-2.5 flex w-full flex-col gap-2.5 text-left"
           >
-            {/* Highlight row */}
+            {/* Tags */}
+            <div className="flex flex-wrap gap-1.5">
+              {caregiver.specializations.slice(0, 3).map((tag) => (
+                <span
+                  key={tag.id}
+                  className="rounded-full bg-[#7676801f] px-2.5 py-1 text-[13px] font-medium text-[#636366]"
+                >
+                  {tag.label}
+                </span>
+              ))}
+            </div>
+
+            {/* Experience + Availability */}
             <div className="flex items-center gap-4 text-[13px] text-[#8e8e93]">
               <span className="inline-flex items-center gap-1.5">
                 <Briefcase className="size-3.5" />
@@ -317,10 +329,20 @@ export function MapBottomSheet({
               </span>
             </div>
 
-            {/* Tap hint */}
-            <p className="text-center text-[12px] text-[#8e8e93]">
-              Stuknij, aby zobaczyć więcej
-            </p>
+            {/* Match bar */}
+            <div className="h-9 w-full overflow-hidden rounded-xl bg-[#007AFF]/8">
+              <div
+                className="flex h-full items-center px-3"
+                style={{
+                  width: `${caregiver.compatibility}%`,
+                  backgroundColor: "rgba(0, 122, 255, 0.12)",
+                }}
+              >
+                <p className="whitespace-nowrap text-[12px] font-medium text-[#007AFF]">
+                  {caregiver.compatibility}% dopasowania
+                </p>
+              </div>
+            </div>
           </button>
         )}
       </div>
