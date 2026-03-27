@@ -1,5 +1,4 @@
 export interface OnboardingData {
-  authMethod: "apple" | "google" | "phone" | null;
   firstName: string;
   lastName: string;
   avatarUrl: string;
@@ -15,7 +14,6 @@ export interface OnboardingData {
 }
 
 export const emptyOnboarding: OnboardingData = {
-  authMethod: null,
   firstName: "",
   lastName: "",
   avatarUrl: "",

@@ -26,11 +26,6 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
     setAuthOpen(true);
   };
 
-  const handleLogin = () => {
-    setAuthVariant("returning");
-    setAuthOpen(true);
-  };
-
   const handleAuthComplete = () => {
     localStorage.setItem(STORAGE_KEY, "true");
     setAuthOpen(false);
@@ -51,11 +46,7 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#f8f4f0]">
       {screen === "welcome" && (
-        <CaregiverWelcome
-          onStart={handleStart}
-          onLogin={handleLogin}
-          onBack={onBack}
-        />
+        <CaregiverWelcome onStart={handleStart} onBack={onBack} />
       )}
       {screen === "onboarding" && (
         <OnboardingWizard

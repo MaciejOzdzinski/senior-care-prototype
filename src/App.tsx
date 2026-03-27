@@ -9,13 +9,18 @@ const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
 
 type Screen = "role" | "family" | "caregiver";
 
+const FAMILY_AUTH_KEY = "carematch_family_auth";
+
 const App = () => {
   const [role, setRole] = useState<RoleMode>("family");
   const [screen, setScreen] = useState<Screen>("role");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem(FAMILY_AUTH_KEY) === "true",
+  );
   const [authGateOpen, setAuthGateOpen] = useState(false);
 
   const handleFamilyAuthComplete = () => {
+    localStorage.setItem(FAMILY_AUTH_KEY, "true");
     setIsAuthenticated(true);
     setAuthGateOpen(false);
   };

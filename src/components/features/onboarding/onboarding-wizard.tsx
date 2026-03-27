@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { OnboardingScaffold } from "./onboarding-scaffold";
-import { StepAccount } from "./step-account";
 import { StepBasicInfo } from "./step-basic-info";
 import { StepSpecializations } from "./step-specializations";
 import { StepAvailability } from "./step-availability";
@@ -9,10 +8,6 @@ import { OnboardingSuccess } from "./onboarding-success";
 import { type OnboardingData, emptyOnboarding } from "./onboarding-types";
 
 const steps = [
-  {
-    headline: "Utwórz konto",
-    supporting: "Wybierz jak chcesz się zalogować. Minimum formalności.",
-  },
   {
     headline: "Dane podstawowe",
     supporting: "Powiedz nam kim jesteś — to pomoże rodzinom Cię poznać.",
@@ -36,10 +31,10 @@ interface OnboardingWizardProps {
   onBack: () => void;
 }
 
-export function OnboardingWizard({
+export const OnboardingWizard = ({
   onComplete,
   onBack,
-}: OnboardingWizardProps) {
+}: OnboardingWizardProps) => {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<OnboardingData>(emptyOnboarding);
   const [done, setDone] = useState(false);
@@ -50,42 +45,40 @@ export function OnboardingWizard({
     [],
   );
 
-  function handleBack() {
+  const handleBack = () => {
     if (step === 1) {
       onBack();
     } else {
       setStep((s) => s - 1);
     }
-  }
+  };
 
-  function handleNext() {
-    if (step < 5) {
+  const handleNext = () => {
+    if (step < 4) {
       setStep((s) => s + 1);
     } else {
       setDone(true);
     }
-  }
+  };
 
-  function isStepValid(): boolean {
+  const isStepValid = (): boolean => {
     switch (step) {
       case 1:
-        return data.authMethod !== null;
-      case 2:
         return (
           data.firstName.trim().length > 0 &&
           data.lastName.trim().length > 0 &&
           data.city.trim().length > 0
         );
-      case 3:
+      case 2:
         return data.specializations.length > 0;
-      case 4:
+      case 3:
         return data.availableDays.length > 0;
-      case 5:
+      case 4:
         return data.hourlyRate.trim().length > 0;
       default:
         return false;
     }
-  }
+  };
 
   if (done) {
     return (
@@ -94,7 +87,7 @@ export function OnboardingWizard({
   }
 
   const { headline, supporting } = steps[step - 1];
-  const isLast = step === 5;
+  const isLast = step === 4;
 
   return (
     <OnboardingScaffold
@@ -105,32 +98,18 @@ export function OnboardingWizard({
       ctaDisabled={!isStepValid()}
       onNext={handleNext}
       onBack={handleBack}
-      secondaryLabel={
-        step === 1
-          ? "Mam już konto"
-          : step >= 3 && !isLast
-            ? "Uzupełnię później"
-            : undefined
-      }
-      onSecondary={
-        step === 1 || (step >= 3 && !isLast) ? handleNext : undefined
-      }
+      secondaryLabel={step >= 2 && !isLast ? "Uzupełnię później" : undefined}
+      onSecondary={step >= 2 && !isLast ? handleNext : undefined}
     >
-      {step === 1 && (
-        <StepAccount
-          selected={data.authMethod}
-          onChange={(method) => patch({ authMethod: method })}
-        />
-      )}
-      {step === 2 && <StepBasicInfo data={data} onChange={patch} />}
-      {step === 3 && (
+      {step === 1 && <StepBasicInfo data={data} onChange={patch} />}
+      {step === 2 && (
         <StepSpecializations
           selected={data.specializations}
           onChange={(ids) => patch({ specializations: ids })}
         />
       )}
-      {step === 4 && <StepAvailability data={data} onChange={patch} />}
-      {step === 5 && <StepRateExperience data={data} onChange={patch} />}
+      {step === 3 && <StepAvailability data={data} onChange={patch} />}
+      {step === 4 && <StepRateExperience data={data} onChange={patch} />}
     </OnboardingScaffold>
   );
-}
+};

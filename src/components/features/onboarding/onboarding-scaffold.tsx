@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 interface OnboardingScaffoldProps {
   step: number;

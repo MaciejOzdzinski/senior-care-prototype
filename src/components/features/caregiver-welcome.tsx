@@ -6,7 +6,6 @@ const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
 
 interface CaregiverWelcomeProps {
   onStart: () => void;
-  onLogin: () => void;
   onBack: () => void;
 }
 
@@ -18,7 +17,6 @@ const benefits = [
 
 export const CaregiverWelcome = ({
   onStart,
-  onLogin,
   onBack,
 }: CaregiverWelcomeProps) => {
   return (
@@ -94,16 +92,8 @@ export const CaregiverWelcome = ({
           >
             Zaczynam
           </Button>
-
-          <button
-            type="button"
-            onClick={onLogin}
-            className="mt-3 text-[15px] font-semibold tracking-[-0.41px] text-[#48484a] transition-colors active:text-[#1c1c1e]"
-          >
-            Mam już konto
-          </button>
         </div>
       </motion.div>
     </div>
   );
-}
+};
