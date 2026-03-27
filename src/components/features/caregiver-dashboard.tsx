@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   BadgeCheck,
+  ArrowLeft,
   Briefcase,
   CheckCircle2,
   ChevronRight,
@@ -29,6 +30,7 @@ type DashTab = "home" | "orders" | "messages" | "profile";
 
 interface CaregiverDashboardProps {
   firstName: string;
+  onBack: () => void;
 }
 
 // ── Mock data ──────────────────────────────────────────────────────────────
@@ -389,7 +391,10 @@ const ProfileTab = ({ firstName }: { firstName: string }) => {
 
 // ── Main Component ─────────────────────────────────────────────────────────
 
-export const CaregiverDashboard = ({ firstName }: CaregiverDashboardProps) => {
+export const CaregiverDashboard = ({
+  firstName,
+  onBack,
+}: CaregiverDashboardProps) => {
   const [activeTab, setActiveTab] = useState<DashTab>("home");
 
   const greeting = firstName ? `Cześć, ${firstName}!` : "Cześć!";
@@ -399,8 +404,21 @@ export const CaregiverDashboard = ({ firstName }: CaregiverDashboardProps) => {
     <div className="fixed inset-0 flex flex-col bg-[#f8f4f0]">
       {/* ── Header ──────────────────────────────────────── */}
       <header className="z-10 bg-[#f2ede8]/90 px-5 pb-3.5 pt-[max(env(safe-area-inset-top),16px)] backdrop-blur-2xl">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="relative flex items-center justify-center">
+          {/* Back button */}
+          <motion.button
+            type="button"
+            onClick={onBack}
+            aria-label="Wróć"
+            whileTap={{ scale: 0.94, opacity: 0.7 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="absolute left-0 grid size-10 place-items-center rounded-full bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.12)] backdrop-blur-sm"
+          >
+            <ArrowLeft className="size-5 text-[#FF9500]" />
+          </motion.button>
+
+          {/* Centered title */}
+          <div className="flex flex-col items-center">
             <h1 className="text-[22px] font-bold tracking-[-0.26px] text-[#1c1c1e]">
               {greeting}
             </h1>
@@ -408,10 +426,12 @@ export const CaregiverDashboard = ({ firstName }: CaregiverDashboardProps) => {
               Gotowa na nowe zlecenia?
             </p>
           </div>
+
+          {/* Avatar (right) */}
           <motion.div
             whileTap={{ scale: 0.94 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="grid size-11 place-items-center rounded-full bg-[#FF9500] text-[17px] font-bold text-white shadow-[0_2px_8px_rgba(255,149,0,0.35)]"
+            className="absolute right-0 grid size-9 place-items-center rounded-full bg-[#FF9500] text-[15px] font-bold text-white shadow-[0_2px_8px_rgba(255,149,0,0.35)]"
           >
             {initial}
           </motion.div>

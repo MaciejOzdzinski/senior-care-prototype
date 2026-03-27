@@ -65,7 +65,7 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
           onBack={() => setScreen("welcome")}
         />
       )}
-      {screen === "dashboard" && <CaregiverDashboard firstName={firstName} />}
+      {screen === "dashboard" && <CaregiverDashboard firstName={firstName} onBack={onBack} />}
 
       <AuthGate
         open={authOpen}
