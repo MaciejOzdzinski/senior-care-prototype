@@ -27,7 +27,7 @@ const steps = [
 ];
 
 interface OnboardingWizardProps {
-  onComplete: () => void;
+  onComplete: (firstName: string) => void;
   onBack: () => void;
 }
 
@@ -82,7 +82,10 @@ export const OnboardingWizard = ({
 
   if (done) {
     return (
-      <OnboardingSuccess firstName={data.firstName} onContinue={onComplete} />
+      <OnboardingSuccess
+        firstName={data.firstName}
+        onContinue={() => onComplete(data.firstName.trim())}
+      />
     );
   }
 

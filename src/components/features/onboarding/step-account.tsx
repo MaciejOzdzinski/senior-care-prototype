@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Apple, Smartphone } from "lucide-react";
-import type { OnboardingData } from "./onboarding-types";
+
+type AuthMethod = "apple" | "google" | "phone" | null;
 
 const tapSpring = { type: "spring" as const, stiffness: 300, damping: 20 };
 
@@ -28,7 +29,7 @@ function GoogleIcon({ className }: { className?: string }) {
 }
 
 interface AuthOption {
-  id: OnboardingData["authMethod"];
+  id: AuthMethod;
   label: string;
   icon: React.ReactNode;
 }
@@ -52,8 +53,8 @@ const authOptions: AuthOption[] = [
 ];
 
 interface StepAccountProps {
-  selected: OnboardingData["authMethod"];
-  onChange: (method: OnboardingData["authMethod"]) => void;
+  selected: AuthMethod;
+  onChange: (method: AuthMethod) => void;
 }
 
 export function StepAccount({ selected, onChange }: StepAccountProps) {

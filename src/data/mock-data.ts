@@ -2608,6 +2608,33 @@ export const familyNeeds: CareNeed[] = [
     lat: 52.191,
     lng: 21.01,
   },
+  {
+    id: "need-3",
+    title: "Całodzienna opieka dla taty",
+    district: "Wilanów",
+    hours: "Wt, Czw · 08:00–18:00",
+    budget: "36–40 zł/h",
+    needs: [
+      { id: "need-hygiene", label: "Higiena" },
+      { id: "need-meals", label: "Posiłki" },
+      { id: "need-companion", label: "Towarzyszenie" },
+    ],
+    lat: 52.165,
+    lng: 21.068,
+  },
+  {
+    id: "need-4",
+    title: "Opieka wieczorna i nocna",
+    district: "Śródmieście",
+    hours: "Codziennie · 19:00–22:00",
+    budget: "30–33 zł/h",
+    needs: [
+      { id: "need-night", label: "Wieczory" },
+      { id: "need-medications", label: "Leki" },
+    ],
+    lat: 52.229,
+    lng: 21.011,
+  },
 ];
 
 export const mapCenter = {

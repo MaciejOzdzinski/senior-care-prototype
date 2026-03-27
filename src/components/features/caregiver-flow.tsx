@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { AuthGate } from "@/components/features/auth-gate";
 import { CaregiverWelcome } from "@/components/features/caregiver-welcome";
+import { CaregiverDashboard } from "@/components/features/caregiver-dashboard";
 import { OnboardingWizard } from "@/components/features/onboarding/onboarding-wizard";
 
 const STORAGE_KEY = "carematch_has_account";
+const FIRST_NAME_KEY = "carematch_first_name";
 
 type CaregiverScreen = "welcome" | "onboarding" | "dashboard";
 type AuthVariant = "new" | "returning";
@@ -19,6 +21,9 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
   const [authOpen, setAuthOpen] = useState(isReturningUser);
   const [authVariant, setAuthVariant] = useState<AuthVariant>(
     isReturningUser ? "returning" : "new",
+  );
+  const [firstName, setFirstName] = useState(
+    () => localStorage.getItem(FIRST_NAME_KEY) ?? "",
   );
 
   const handleStart = () => {
@@ -36,6 +41,12 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
     }
   };
 
+  const handleOnboardingComplete = (name: string) => {
+    localStorage.setItem(FIRST_NAME_KEY, name);
+    setFirstName(name);
+    setScreen("dashboard");
+  };
+
   const handleAuthDismiss = (open: boolean) => {
     setAuthOpen(open);
     if (!open && isReturningUser && screen === "welcome") {
@@ -50,17 +61,11 @@ export const CaregiverFlow = ({ onBack }: CaregiverFlowProps) => {
       )}
       {screen === "onboarding" && (
         <OnboardingWizard
-          onComplete={() => setScreen("dashboard")}
+          onComplete={handleOnboardingComplete}
           onBack={() => setScreen("welcome")}
         />
       )}
-      {screen === "dashboard" && (
-        <div className="flex min-h-screen items-center justify-center px-6 text-center">
-          <p className="text-[17px] font-medium text-[#3c3c43]/60">
-            Dashboard — wkrótce
-          </p>
-        </div>
-      )}
+      {screen === "dashboard" && <CaregiverDashboard firstName={firstName} />}
 
       <AuthGate
         open={authOpen}
