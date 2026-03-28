@@ -7,6 +7,9 @@ import { StepRateExperience } from "./step-rate-experience";
 import { OnboardingSuccess } from "./onboarding-success";
 import { type OnboardingData, emptyOnboarding } from "./onboarding-types";
 
+const ONBOARDING_STEP_KEY = "carematch_onboarding_step";
+const ONBOARDING_DATA_KEY = "carematch_onboarding_data";
+
 const steps = [
   {
     headline: "Dane podstawowe",
@@ -29,15 +32,28 @@ const steps = [
 interface OnboardingWizardProps {
   onComplete: (firstName: string) => void;
   onBack: () => void;
+  initialStep?: number;
+  initialData?: OnboardingData;
 }
 
 export const OnboardingWizard = ({
   onComplete,
   onBack,
+  initialStep = 1,
+  initialData,
 }: OnboardingWizardProps) => {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState<OnboardingData>(emptyOnboarding);
+  const [step, setStep] = useState(initialStep);
+  const [data, setData] = useState<OnboardingData>(
+    initialData ?? emptyOnboarding,
+  );
   const [done, setDone] = useState(false);
+
+  // Persist step 1 on first mount so incomplete onboarding is always detectable
+  useState(() => {
+    if (!localStorage.getItem(ONBOARDING_STEP_KEY)) {
+      localStorage.setItem(ONBOARDING_STEP_KEY, String(initialStep));
+    }
+  });
 
   const patch = useCallback(
     (updates: Partial<OnboardingData>) =>
@@ -47,7 +63,11 @@ export const OnboardingWizard = ({
 
   const handleBack = () => {
     if (step === 1) {
-      onBack();
+      if (window.confirm("Czy na pewno?\nTwoje dane nie zostaną zapisane.")) {
+        localStorage.removeItem(ONBOARDING_STEP_KEY);
+        localStorage.removeItem(ONBOARDING_DATA_KEY);
+        onBack();
+      }
     } else {
       setStep((s) => s - 1);
     }
@@ -55,8 +75,13 @@ export const OnboardingWizard = ({
 
   const handleNext = () => {
     if (step < 4) {
-      setStep((s) => s + 1);
+      const nextStep = step + 1;
+      setStep(nextStep);
+      localStorage.setItem(ONBOARDING_STEP_KEY, String(nextStep));
+      localStorage.setItem(ONBOARDING_DATA_KEY, JSON.stringify(data));
     } else {
+      localStorage.removeItem(ONBOARDING_STEP_KEY);
+      localStorage.removeItem(ONBOARDING_DATA_KEY);
       setDone(true);
     }
   };
